@@ -1,0 +1,145 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".RegisterActivity">
+
+    <ImageView
+        android:id="@+id/iv_register_logo"
+        android:layout_width="126dp"
+        android:layout_height="126dp"
+        android:layout_marginTop="80dp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:srcCompat="@drawable/logo" />
+
+    <TextView
+        android:id="@+id/tv_register_logo"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:fontFamily="@font/montserrat_bold"
+        android:text="TilkTalk"
+        android:textColor="@color/black"
+        android:textSize="28sp"
+        app:layout_constraintEnd_toEndOf="@+id/iv_register_logo"
+        app:layout_constraintStart_toStartOf="@+id/iv_register_logo"
+        app:layout_constraintTop_toBottomOf="@+id/iv_register_logo" />
+
+    <androidx.constraintlayout.widget.Guideline
+        android:id="@+id/gl_top"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        app:layout_constraintGuide_begin="295dp" />
+
+    <androidx.constraintlayout.widget.Guideline
+        android:id="@+id/gl_bottom"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        app:layout_constraintGuide_end="200dp" />
+
+    <TextView
+        android:id="@+id/tv_register_email_label"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:fontFamily="@font/montserrat"
+        android:text="E-mail"
+        android:textColor="@color/gray"
+        android:textStyle="bold"
+        app:layout_constraintStart_toStartOf="@+id/et_register_email"
+        app:layout_constraintTop_toTopOf="@+id/gl_top" />
+
+    <EditText
+        android:id="@+id/et_register_email"
+        android:layout_width="290dp"
+        android:layout_height="32dp"
+        android:background="@drawable/input_text_style"
+        android:ems="10"
+        android:inputType="textPersonName"
+        android:paddingLeft="10dp"
+        android:paddingRight="10dp"
+        android:textColor="@color/gray"
+        android:textSize="14sp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.495"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/tv_register_email_label" />
+
+    <TextView
+        android:id="@+id/tv_register_name_label"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="20dp"
+        android:fontFamily="@font/montserrat"
+        android:text="Display Name"
+        android:textColor="@color/gray"
+        android:textStyle="bold"
+        app:layout_constraintStart_toStartOf="@+id/et_register_name"
+        app:layout_constraintTop_toBottomOf="@+id/et_register_email" />
+
+    <EditText
+        android:id="@+id/et_register_name"
+        android:layout_width="290dp"
+        android:layout_height="32dp"
+        android:background="@drawable/input_text_style"
+        android:ems="10"
+        android:inputType="textPassword"
+        android:paddingLeft="10dp"
+        android:paddingRight="10dp"
+        android:textColor="@color/gray"
+        android:textSize="16sp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.495"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/tv_register_name_label" />
+
+    <EditText
+        android:id="@+id/et_register_password"
+        android:layout_width="290dp"
+        android:layout_height="32dp"
+        android:background="@drawable/input_text_style"
+        android:ems="10"
+        android:inputType="textPassword"
+        android:paddingLeft="10dp"
+        android:paddingRight="10dp"
+        android:textColor="@color/gray"
+        android:textSize="16sp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.495"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/tv_register_password_label" />
+
+    <TextView
+        android:id="@+id/tv_register_password_label"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="20dp"
+        android:fontFamily="@font/montserrat"
+        android:text="Password"
+        android:textColor="@color/gray"
+        android:textStyle="bold"
+        app:layout_constraintStart_toStartOf="@+id/et_register_password"
+        app:layout_constraintTop_toBottomOf="@+id/et_register_name" />
+
+    <Button
+        android:id="@+id/btn_register"
+        android:layout_width="134dp"
+        android:layout_height="36dp"
+        android:layout_marginTop="38dp"
+        android:background="@drawable/input_text_style"
+        android:fontFamily="@font/montserrat_bold"
+        android:paddingTop="2dp"
+        android:paddingBottom="2dp"
+        android:text="Register"
+        android:textColor="@color/gray"
+        android:textStyle="bold"
+        app:backgroundTint="@color/gray"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="@+id/gl_bottom" />
+
+</androidx.constraintlayout.widget.ConstraintLayout>
