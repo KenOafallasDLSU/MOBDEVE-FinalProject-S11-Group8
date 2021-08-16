@@ -11,8 +11,8 @@
         android:layout_width="126dp"
         android:layout_height="126dp"
         android:layout_marginTop="80dp"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toStartOf="@+id/gl_login_right"
+        app:layout_constraintStart_toStartOf="@+id/gl_login_left"
         app:layout_constraintTop_toTopOf="parent"
         app:srcCompat="@drawable/logo" />
 
@@ -29,18 +29,25 @@
         app:layout_constraintTop_toBottomOf="@+id/iv_register_logo" />
 
     <androidx.constraintlayout.widget.Guideline
-        android:id="@+id/gl_top"
+        android:id="@+id/gl_login_top"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:orientation="horizontal"
         app:layout_constraintGuide_begin="295dp" />
 
     <androidx.constraintlayout.widget.Guideline
-        android:id="@+id/gl_bottom"
+        android:id="@+id/gl_login_left"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:orientation="horizontal"
-        app:layout_constraintGuide_end="300dp" />
+        android:orientation="vertical"
+        app:layout_constraintGuide_begin="60dp" />
+
+    <androidx.constraintlayout.widget.Guideline
+        android:id="@+id/gl_login_right"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        app:layout_constraintGuide_end="60dp" />
 
     <TextView
         android:id="@+id/tv_register_email_label"
@@ -50,12 +57,12 @@
         android:text="E-mail"
         android:textColor="@color/gray"
         android:textStyle="bold"
-        app:layout_constraintStart_toStartOf="@+id/et_register_email"
-        app:layout_constraintTop_toTopOf="@+id/gl_top" />
+        app:layout_constraintStart_toStartOf="@+id/gl_login_left"
+        app:layout_constraintTop_toTopOf="@+id/gl_login_top" />
 
     <EditText
         android:id="@+id/et_register_email"
-        android:layout_width="290dp"
+        android:layout_width="0dp"
         android:layout_height="32dp"
         android:background="@drawable/input_text_style"
         android:ems="10"
@@ -64,9 +71,9 @@
         android:paddingRight="10dp"
         android:textColor="@color/gray"
         android:textSize="14sp"
-        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintEnd_toStartOf="@+id/gl_login_right"
         app:layout_constraintHorizontal_bias="0.495"
-        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintStart_toStartOf="@+id/gl_login_left"
         app:layout_constraintTop_toBottomOf="@+id/tv_register_email_label" />
 
     <TextView
@@ -78,12 +85,12 @@
         android:text="Password"
         android:textColor="@color/gray"
         android:textStyle="bold"
-        app:layout_constraintStart_toStartOf="@+id/et_register_name"
+        app:layout_constraintStart_toStartOf="@+id/gl_login_left"
         app:layout_constraintTop_toBottomOf="@+id/et_register_email" />
 
     <EditText
         android:id="@+id/et_register_name"
-        android:layout_width="290dp"
+        android:layout_width="0dp"
         android:layout_height="32dp"
         android:background="@drawable/input_text_style"
         android:ems="10"
@@ -92,16 +99,16 @@
         android:paddingRight="10dp"
         android:textColor="@color/gray"
         android:textSize="16sp"
-        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintEnd_toStartOf="@+id/gl_login_right"
         app:layout_constraintHorizontal_bias="0.495"
-        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintStart_toStartOf="@+id/gl_login_left"
         app:layout_constraintTop_toBottomOf="@+id/tv_register_name_label" />
 
     <Button
         android:id="@+id/btn_register"
         android:layout_width="134dp"
         android:layout_height="36dp"
-        android:layout_marginTop="38dp"
+        android:layout_marginTop="40dp"
         android:background="@drawable/input_text_style"
         android:fontFamily="@font/montserrat_bold"
         android:paddingTop="2dp"
@@ -110,9 +117,9 @@
         android:textColor="@color/gray"
         android:textStyle="bold"
         app:backgroundTint="@color/gray"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="@+id/gl_bottom" />
+        app:layout_constraintEnd_toStartOf="@+id/gl_login_right"
+        app:layout_constraintStart_toStartOf="@+id/gl_login_left"
+        app:layout_constraintTop_toBottomOf="@+id/et_register_name" />
 
     <TextView
         android:id="@+id/tv_login_register"
@@ -124,8 +131,8 @@
         android:textColor="@color/gray"
         android:textSize="12sp"
         android:textStyle="bold"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toStartOf="@+id/gl_login_right"
+        app:layout_constraintStart_toStartOf="@+id/gl_login_left"
         app:layout_constraintTop_toBottomOf="@+id/btn_register" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

@@ -9,27 +9,15 @@
     <option name="autoReloadType" value="NONE" />
   </component>
   <component name="BranchesTreeState">
-    <expand>
-      <path>
-        <item name="ROOT" type="e8cecc67:BranchNodeDescriptor" />
-        <item name="LOCAL_ROOT" type="e8cecc67:BranchNodeDescriptor" />
-      </path>
-      <path>
-        <item name="ROOT" type="e8cecc67:BranchNodeDescriptor" />
-        <item name="REMOTE_ROOT" type="e8cecc67:BranchNodeDescriptor" />
-      </path>
-      <path>
-        <item name="ROOT" type="e8cecc67:BranchNodeDescriptor" />
-        <item name="REMOTE_ROOT" type="e8cecc67:BranchNodeDescriptor" />
-        <item name="GROUP_NODE:origin" type="e8cecc67:BranchNodeDescriptor" />
-      </path>
-    </expand>
+    <expand />
     <select />
   </component>
   <component name="ChangeListManager">
     <list default="true" id="501bdcb8-8401-417b-b7f5-551eece45389" name="Default Changelist" comment="">
-      <change afterPath="$PROJECT_DIR$/.idea/runConfigurations.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/src/main/java/com/mobdeve/s11/group8/finalproject/MainActivity.kt" beforeDir="false" afterPath="$PROJECT_DIR$/app/src/main/java/com/mobdeve/s11/group8/finalproject/MainActivity.kt" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/src/main/res/layout/activity_main.xml" beforeDir="false" afterPath="$PROJECT_DIR$/app/src/main/res/layout/activity_main.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/src/main/res/layout/activity_register.xml" beforeDir="false" afterPath="$PROJECT_DIR$/app/src/main/res/layout/activity_register.xml" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -156,11 +144,6 @@
       </map>
     </option>
   </component>
-  <component name="VcsManagerConfiguration">
-    <ignored-roots>
-      <path value="$PROJECT_DIR$/.." />
-    </ignored-roots>
-  </component>
   <component name="WindowStateProjectService">
     <state x="1695" y="334" key="Downloadable.Font.Dialog.Size" timestamp="1629098268251">
       <screen x="0" y="0" width="2686" height="1152" />
@@ -170,9 +153,9 @@
       <screen x="0" y="0" width="2686" height="1152" />
     </state>
     <state x="1124" y="331" key="FileChooserDialogImpl/0.0.2686.1152@0.0.2686.1152" timestamp="1629100505725" />
-    <state x="852" y="221" key="SettingsEditor" timestamp="1629101006745">
+    <state x="852" y="221" key="SettingsEditor" timestamp="1629101045593">
       <screen x="0" y="0" width="2686" height="1152" />
     </state>
-    <state x="852" y="221" key="SettingsEditor/0.0.2686.1152@0.0.2686.1152" timestamp="1629101006745" />
+    <state x="852" y="221" key="SettingsEditor/0.0.2686.1152@0.0.2686.1152" timestamp="1629101045593" />
   </component>
 </project>
