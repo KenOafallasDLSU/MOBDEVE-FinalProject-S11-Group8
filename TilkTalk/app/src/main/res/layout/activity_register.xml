@@ -11,8 +11,8 @@
         android:layout_width="126dp"
         android:layout_height="126dp"
         android:layout_marginTop="80dp"
-        app:layout_constraintEnd_toStartOf="@+id/gl_right"
-        app:layout_constraintStart_toStartOf="@+id/gl_left"
+        app:layout_constraintEnd_toStartOf="@+id/gl_register_right"
+        app:layout_constraintStart_toStartOf="@+id/gl_register_left"
         app:layout_constraintTop_toTopOf="parent"
         app:srcCompat="@drawable/logo" />
 
@@ -29,21 +29,21 @@
         app:layout_constraintTop_toBottomOf="@+id/iv_register_logo" />
 
     <androidx.constraintlayout.widget.Guideline
-        android:id="@+id/gl_login_top"
+        android:id="@+id/gl_register_top"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:orientation="horizontal"
         app:layout_constraintGuide_begin="295dp" />
 
     <androidx.constraintlayout.widget.Guideline
-        android:id="@+id/gl_left"
+        android:id="@+id/gl_register_left"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:orientation="vertical"
         app:layout_constraintGuide_begin="60dp" />
 
     <androidx.constraintlayout.widget.Guideline
-        android:id="@+id/gl_right"
+        android:id="@+id/gl_register_right"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:orientation="vertical"
@@ -57,8 +57,8 @@
         android:text="E-mail"
         android:textColor="@color/gray"
         android:textStyle="bold"
-        app:layout_constraintStart_toStartOf="@+id/gl_left"
-        app:layout_constraintTop_toTopOf="@+id/gl_login_top" />
+        app:layout_constraintStart_toStartOf="@+id/gl_register_left"
+        app:layout_constraintTop_toTopOf="@+id/gl_register_top" />
 
     <EditText
         android:id="@+id/et_register_email"
@@ -71,9 +71,9 @@
         android:paddingRight="10dp"
         android:textColor="@color/gray"
         android:textSize="14sp"
-        app:layout_constraintEnd_toStartOf="@+id/gl_right"
+        app:layout_constraintEnd_toStartOf="@+id/gl_register_right"
         app:layout_constraintHorizontal_bias="0.495"
-        app:layout_constraintStart_toStartOf="@+id/gl_left"
+        app:layout_constraintStart_toStartOf="@+id/gl_register_left"
         app:layout_constraintTop_toBottomOf="@+id/tv_register_email_label" />
 
     <TextView
@@ -85,7 +85,7 @@
         android:text="Display Name"
         android:textColor="@color/gray"
         android:textStyle="bold"
-        app:layout_constraintStart_toStartOf="@+id/gl_left"
+        app:layout_constraintStart_toStartOf="@+id/gl_register_left"
         app:layout_constraintTop_toBottomOf="@+id/et_register_email" />
 
     <EditText
@@ -99,9 +99,8 @@
         android:paddingRight="10dp"
         android:textColor="@color/gray"
         android:textSize="16sp"
-        app:layout_constraintEnd_toStartOf="@+id/gl_right"
-        app:layout_constraintHorizontal_bias="0.495"
-        app:layout_constraintStart_toStartOf="@+id/gl_left"
+        app:layout_constraintEnd_toStartOf="@+id/gl_register_right"
+        app:layout_constraintStart_toStartOf="@+id/gl_register_left"
         app:layout_constraintTop_toBottomOf="@+id/tv_register_name_label" />
 
     <EditText
@@ -115,9 +114,8 @@
         android:paddingRight="10dp"
         android:textColor="@color/gray"
         android:textSize="16sp"
-        app:layout_constraintEnd_toStartOf="@+id/gl_right"
-        app:layout_constraintHorizontal_bias="0.495"
-        app:layout_constraintStart_toStartOf="@+id/gl_left"
+        app:layout_constraintEnd_toStartOf="@+id/gl_register_right"
+        app:layout_constraintStart_toStartOf="@+id/gl_register_left"
         app:layout_constraintTop_toBottomOf="@+id/tv_register_password_label" />
 
     <TextView
@@ -129,7 +127,7 @@
         android:text="Password"
         android:textColor="@color/gray"
         android:textStyle="bold"
-        app:layout_constraintStart_toStartOf="@+id/gl_left"
+        app:layout_constraintStart_toStartOf="@+id/gl_register_left"
         app:layout_constraintTop_toBottomOf="@+id/et_register_name" />
 
     <Button
@@ -145,9 +143,8 @@
         android:textColor="@color/gray"
         android:textStyle="bold"
         app:backgroundTint="@color/gray"
-        app:layout_constraintEnd_toStartOf="@+id/gl_right"
-        app:layout_constraintHorizontal_bias="0.498"
-        app:layout_constraintStart_toStartOf="@+id/gl_left"
+        app:layout_constraintEnd_toStartOf="@+id/gl_register_right"
+        app:layout_constraintStart_toStartOf="@+id/gl_register_left"
         app:layout_constraintTop_toBottomOf="@+id/et_register_password" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>
