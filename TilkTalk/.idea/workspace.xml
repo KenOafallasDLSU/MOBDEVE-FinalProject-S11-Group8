@@ -143,6 +143,7 @@
         </entry>
       </map>
     </option>
+    <option name="oldMeFiltersMigrated" value="true" />
   </component>
   <component name="WindowStateProjectService">
     <state x="1695" y="334" key="Downloadable.Font.Dialog.Size" timestamp="1629098268251">
