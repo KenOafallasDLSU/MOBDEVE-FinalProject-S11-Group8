@@ -4,6 +4,10 @@ class Thread constructor(
     var id: String,
     var username: String,
     var displayName: String,
-    var description: String,
+    var text: String,
     var date: String
-) { }
+) {
+    fun getFirstNameCharacter(): Char {
+        return this.displayName[0]
+    }
+}
