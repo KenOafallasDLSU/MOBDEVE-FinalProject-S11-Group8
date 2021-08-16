@@ -5,6 +5,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.TextView
+import androidx.core.content.ContextCompat
 import androidx.recyclerview.widget.RecyclerView
 import de.hdodenhof.circleimageview.CircleImageView
 
@@ -42,13 +43,12 @@ class ThreadAdapter : RecyclerView.Adapter<RecyclerView.ViewHolder>(){
         val date : TextView = itemView.findViewById(R.id.tv_thread_item_time)
         val avatarBackground : CircleImageView = itemView.findViewById(R.id.iv_thread_item_avatar)
 
-        @SuppressLint("ResourceAsColor")
         fun bind(thread : Thread) {
             avatarLetter.setText(thread.getFirstNameCharacter().toString())
             displayName.setText(thread.displayName)
             textMessage.setText(thread.text)
             date.setText(thread.date)
-            avatarBackground.setBackgroundColor(R.color.blue_500)
+            avatarBackground.background.setTint(ContextCompat.getColor(itemView.context, R.color.blue_500))
         }
     }
 }
