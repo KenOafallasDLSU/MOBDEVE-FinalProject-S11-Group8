@@ -1,0 +1,88 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:layout_marginBottom="8dp"
+    android:background="#00000000"
+    android:backgroundTint="@color/blue_500"
+    android:orientation="vertical">
+
+    <androidx.cardview.widget.CardView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        app:cardBackgroundColor="#33C4C4C4"
+        app:cardCornerRadius="20dp"
+        app:cardElevation="0dp">
+
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:padding="16dp">
+
+            <de.hdodenhof.circleimageview.CircleImageView
+                android:id="@+id/iv_thread_item_avatar"
+                android:layout_width="72dp"
+                android:layout_height="72dp"
+                android:background="@drawable/thread_avatar_circle"
+                android:backgroundTint="@color/blue_500"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent" />
+
+            <TextView
+                android:id="@+id/tv_thread_item_avatar_letter"
+                android:layout_width="0dp"
+                android:layout_height="0dp"
+                android:fontFamily="@font/montserrat_bold"
+                android:gravity="center"
+                android:text="K"
+                android:textColor="#FFFFFF"
+                android:textSize="34sp"
+                app:layout_constraintBottom_toBottomOf="@+id/iv_thread_item_avatar"
+                app:layout_constraintEnd_toEndOf="@+id/iv_thread_item_avatar"
+                app:layout_constraintStart_toStartOf="@+id/iv_thread_item_avatar"
+                app:layout_constraintTop_toTopOf="@+id/iv_thread_item_avatar" />
+
+            <TextView
+                android:id="@+id/tv_thread_item_time"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:fontFamily="@font/montserrat"
+                android:text="Sunday, 8:00 PM"
+                android:textSize="12sp"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintTop_toTopOf="@+id/tv_thread_item_name" />
+
+            <TextView
+                android:id="@+id/tv_thread_item_name"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="16dp"
+                android:ellipsize="end"
+                android:fontFamily="@font/montserrat"
+                android:maxLines="1"
+                android:text="Display Name"
+                android:textStyle="bold"
+                app:layout_constraintEnd_toStartOf="@+id/tv_thread_item_time"
+                app:layout_constraintHorizontal_bias="0.0"
+                app:layout_constraintStart_toEndOf="@+id/iv_thread_item_avatar"
+                app:layout_constraintTop_toTopOf="@+id/iv_thread_item_avatar" />
+
+            <TextView
+                android:id="@+id/tv_thread_item_text"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:ellipsize="end"
+                android:fontFamily="@font/montserrat"
+                android:maxLines="3"
+                android:text="This is my last message. This is my last message. This is my last message. This is my last message. This is my last message. This is my last message. This is my last message."
+                android:textSize="12sp"
+                app:layout_constraintBottom_toBottomOf="@+id/iv_thread_item_avatar"
+                app:layout_constraintEnd_toEndOf="@+id/tv_thread_item_time"
+                app:layout_constraintStart_toStartOf="@+id/tv_thread_item_name"
+                app:layout_constraintTop_toBottomOf="@+id/tv_thread_item_name" />
+        </androidx.constraintlayout.widget.ConstraintLayout>
+    </androidx.cardview.widget.CardView>
+</LinearLayout>

@@ -13,8 +13,8 @@ class MainActivity : AppCompatActivity() {
 
         val loginButton = findViewById<Button>(R.id.btn_login)
         loginButton.setOnClickListener {
-//            val chatIntent = Intent(this, ThreadActivity::class.java)
-            val chatIntent = Intent(this, RegisterActivity::class.java) // for testing hehe
+            val chatIntent = Intent(this, ThreadActivity::class.java)
+//            val chatIntent = Intent(this, RegisterActivity::class.java) // for testing hehe
             startActivity(chatIntent)
         }
 
