@@ -59,7 +59,7 @@
             android:background="@drawable/thread_avatar_circle"
             android:backgroundTint="@color/green_700"
             android:clickable="true"
-            android:focusable="auto"
+            android:focusable="true"
             android:fontFamily="@font/montserrat"
             android:gravity="center"
             android:shadowColor="#00FFFFFF"
