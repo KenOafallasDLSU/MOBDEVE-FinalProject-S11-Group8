@@ -48,7 +48,9 @@ class ThreadAdapter : RecyclerView.Adapter<RecyclerView.ViewHolder>(){
             displayName.setText(thread.displayName)
             textMessage.setText(thread.text)
             date.setText(thread.date)
-            avatarBackground.background.setTint(ContextCompat.getColor(itemView.context, R.color.blue_500))
+
+            val color: Int = itemView.getResources().getIntArray(R.array.appcolors)[thread.getDisplayNameLength()]
+            avatarBackground.background.setTint(color)
         }
     }
 }

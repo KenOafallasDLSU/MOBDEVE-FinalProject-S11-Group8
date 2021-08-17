@@ -5,9 +5,12 @@ class Thread constructor(
     var username: String,
     var displayName: String,
     var text: String,
-    var date: String
+    var date: String,
 ) {
     fun getFirstNameCharacter(): Char {
         return this.displayName[0]
+    }
+    fun getDisplayNameLength() : Int {
+        return this.username.length % 5
     }
 }
