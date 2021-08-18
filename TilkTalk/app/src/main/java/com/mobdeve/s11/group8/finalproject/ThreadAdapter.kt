@@ -1,15 +1,18 @@
 package com.mobdeve.s11.group8.finalproject
 
-import android.annotation.SuppressLint
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.TextView
-import androidx.core.content.ContextCompat
+import androidx.cardview.widget.CardView
 import androidx.recyclerview.widget.RecyclerView
 import de.hdodenhof.circleimageview.CircleImageView
 
-class ThreadAdapter : RecyclerView.Adapter<RecyclerView.ViewHolder>(){
+interface OnItemClickListener{
+    fun onItemClick(position : Int)
+}
+
+class ThreadAdapter(var listener: OnItemClickListener) : RecyclerView.Adapter<RecyclerView.ViewHolder>(){
 
     private var items: List<Thread> = ArrayList()
 
@@ -22,7 +25,7 @@ class ThreadAdapter : RecyclerView.Adapter<RecyclerView.ViewHolder>(){
     override fun onBindViewHolder(holder: RecyclerView.ViewHolder, position: Int) {
         when(holder){
             is ThreadViewHolder -> {
-                holder.bind(this.items.get(position))
+                holder.bind(this.items.get(position), this.listener)
             }
         }
     }
@@ -42,8 +45,9 @@ class ThreadAdapter : RecyclerView.Adapter<RecyclerView.ViewHolder>(){
         val textMessage : TextView = itemView.findViewById(R.id.tv_thread_item_text)
         val date : TextView = itemView.findViewById(R.id.tv_thread_item_time)
         val avatarBackground : CircleImageView = itemView.findViewById(R.id.iv_thread_item_avatar)
+        val item : CardView = itemView.findViewById(R.id.cv_item_thread)
 
-        fun bind(thread : Thread) {
+        fun bind(thread : Thread, listener : OnItemClickListener) {
             avatarLetter.setText(thread.getFirstNameCharacter().toString())
             displayName.setText(thread.displayName)
             textMessage.setText(thread.text)
@@ -51,6 +55,11 @@ class ThreadAdapter : RecyclerView.Adapter<RecyclerView.ViewHolder>(){
 
             val color: Int = itemView.getResources().getIntArray(R.array.appcolors)[thread.getDisplayNameLength()]
             avatarBackground.background.setTint(color)
+
+            this.item.setOnClickListener{
+                listener.onItemClick(adapterPosition)
+            }
+
         }
     }
 }
