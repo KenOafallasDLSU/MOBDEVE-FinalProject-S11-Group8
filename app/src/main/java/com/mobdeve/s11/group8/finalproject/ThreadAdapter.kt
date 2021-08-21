@@ -48,12 +48,12 @@ class ThreadAdapter(var listener: OnItemClickListener) : RecyclerView.Adapter<Re
         val item : CardView = itemView.findViewById(R.id.cv_item_thread)
 
         fun bind(thread : Thread, listener : OnItemClickListener) {
-            avatarLetter.setText(thread.getFirstNameCharacter().toString())
-            displayName.setText(thread.displayName)
-            textMessage.setText(thread.text)
-            date.setText(thread.date)
+            avatarLetter.setText(thread.getOtherUser("")[0].toString())
+            textMessage.setText(thread.getLastChat())
+            displayName.setText(thread.getOtherUser(""))
+            date.setText(thread.updated)
 
-            val color: Int = itemView.getResources().getIntArray(R.array.appcolors)[thread.getDisplayNameLength()]
+            val color: Int = itemView.getResources().getIntArray(R.array.appcolors)[thread.getOtherUser("").length % 5]
             avatarBackground.background.setTint(color)
 
             this.item.setOnClickListener{

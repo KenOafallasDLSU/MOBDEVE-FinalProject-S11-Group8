@@ -2,15 +2,15 @@ package com.mobdeve.s11.group8.finalproject
 
 class Thread constructor(
     var id: String,
-    var username: String,
-    var displayName: String,
-    var text: String,
-    var date: String,
+    var users: ArrayList<String>,
+    var chats: ArrayList<String>,
+    var updated: String,
 ) {
-    fun getFirstNameCharacter(): Char {
-        return this.displayName[0]
+    fun getOtherUser(id : String) : String {
+        if (users[0] == id){ return users[1] }
+        return users[0]
     }
-    fun getDisplayNameLength() : Int {
-        return this.username.length % 5
+    fun getLastChat() : String {
+        return chats.last()
     }
 }
