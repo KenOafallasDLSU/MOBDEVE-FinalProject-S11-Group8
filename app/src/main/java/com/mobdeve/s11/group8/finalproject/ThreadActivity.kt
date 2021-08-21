@@ -1,12 +1,12 @@
 package com.mobdeve.s11.group8.finalproject
 
+import android.content.Intent
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.widget.Toast
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.google.android.material.floatingactionbutton.FloatingActionButton
-import java.text.FieldPosition
 
 class ThreadActivity : AppCompatActivity(), OnItemClickListener {
 
@@ -40,7 +40,9 @@ class ThreadActivity : AppCompatActivity(), OnItemClickListener {
     }
 
     override fun onItemClick(position: Int) {
-        Toast.makeText(this, items[position].displayName, Toast.LENGTH_SHORT).show()
+        val intent = Intent(this, ChatActivity::class.java)
+        intent.putExtra(Keys.THREAD_ID_KEY.name, items[position].id)
+        startActivity(intent);
     }
 
     override fun onResume() {

@@ -1,0 +1,39 @@
+{
+  "project_info": {
+    "project_number": "521315460349",
+    "project_id": "mobdeve-tilktolk",
+    "storage_bucket": "mobdeve-tilktolk.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:521315460349:android:7a703f35ddfa7d97e7ca94",
+        "android_client_info": {
+          "package_name": "com.mobdeve.s11.group8.finalproject"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "521315460349-h48tqreqebimd7297b5mmvm61naiu9nb.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDhgWQKVQ7VKRGbq5QlE84_CTf4Edt_Ygg"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "521315460349-h48tqreqebimd7297b5mmvm61naiu9nb.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
