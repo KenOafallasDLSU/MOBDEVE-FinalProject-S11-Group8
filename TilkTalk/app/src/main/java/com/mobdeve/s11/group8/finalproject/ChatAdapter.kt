@@ -3,20 +3,55 @@ package com.mobdeve.s11.group8.finalproject
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
+import java.util.*
+import kotlin.collections.ArrayList
 
 class ChatAdapter(private var chatList: ArrayList<Chat>) :
     RecyclerView.Adapter<RecyclerView.ViewHolder>() {
 
+    companion object {
+        private const val LEFT_LAYOUT: Int = 0
+        private const val RIGHT_LAYOUT: Int = 1
+    }
+
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ChatViewHolder {
         //inflate template
-        TODO("Not yet implemented")
+        val inflater = LayoutInflater.from (parent.context)
+        val layout = if (viewType == 0) R.layout.item_chat_left else R.layout.item_chat_right
+        val view = inflater.inflate(layout, parent, false)
+        return ChatViewHolder(view)
     }
 
     override fun onBindViewHolder(holder: RecyclerView.ViewHolder, position: Int) {
-        TODO("Not yet implemented")
+        val chatHolder: ChatViewHolder = holder as ChatViewHolder
+        chatHolder.setItemChatBody(this.chatList.get(position).body)
+
+        //Time formatting
+        val now = Calendar.getInstance()
+        val currentDay = now.get(Calendar.DAY_OF_YEAR)
+        val currentWeek = now.get(Calendar.WEEK_OF_YEAR)
+        val currentYear = now.get(Calendar.YEAR)
+        if (currentYear != this.chatList.get(position).getYear())
+            chatHolder.setItemChatDate(this.chatList.get(position).getDateTimeString())
+        else if (currentWeek != this.chatList.get(position).getWeekOfYear())
+            chatHolder.setItemChatDate(this.chatList.get(position).getDayMonthTimeString())
+        else if (currentDay != this.chatList.get(position).getDayOfYear())
+            chatHolder.setItemChatDate(this.chatList.get(position).getDayOfWeekTimeString())
+        else
+            chatHolder.setItemChatDate(this.chatList.get(position).getTimeString())
+
+        //Chat bubble formatting
+        chatHolder.setItemChatBubbleFormat("1" == this.chatList.get(position).senderId)
     }
 
     override fun getItemCount(): Int {
-        TODO("Not yet implemented")
+        return this.chatList.size
+    }
+
+    override fun getItemViewType(position: Int): Int {
+        if ("1" == this.chatList.get(position).senderId)
+            return LEFT_LAYOUT
+        else
+            return RIGHT_LAYOUT
     }
 }
