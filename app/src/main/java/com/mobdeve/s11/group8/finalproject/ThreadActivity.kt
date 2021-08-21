@@ -12,7 +12,7 @@ class ThreadActivity : AppCompatActivity(), OnItemClickListener {
 
     private lateinit var threadAdapter: ThreadAdapter
     private lateinit var btnAdd : FloatingActionButton
-    private var items: List<Thread> = ArrayList()
+    private var threads: List<Thread> = ArrayList()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -20,7 +20,9 @@ class ThreadActivity : AppCompatActivity(), OnItemClickListener {
 
         btnAdd = findViewById(R.id.btn_thread_add)
         btnAdd.setOnClickListener { v ->
-            // TODO: Navigate to chat activity if exists; else, create toast
+            // TODO: look for user with email,
+            // create new thread if exists
+            // do not store thread in db yet
         }
 
         initRecyclerView()
@@ -28,8 +30,8 @@ class ThreadActivity : AppCompatActivity(), OnItemClickListener {
     }
 
     private fun initData(){
-        this.items = ThreadDataHelper.initData()
-        threadAdapter.submitList(items)
+        this.threads = ThreadDataHelper.initData()
+        threadAdapter.submitList(threads)
     }
 
     private fun initRecyclerView(){
@@ -41,7 +43,7 @@ class ThreadActivity : AppCompatActivity(), OnItemClickListener {
 
     override fun onItemClick(position: Int) {
         val intent = Intent(this, ChatActivity::class.java)
-        intent.putExtra(Keys.THREAD_ID_KEY.name, items[position].id)
+        intent.putExtra(Keys.THREAD_ID_KEY.name, threads[position].id)
         startActivity(intent);
     }
 
