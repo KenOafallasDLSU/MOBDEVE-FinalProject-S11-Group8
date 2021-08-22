@@ -1,16 +1,13 @@
 package com.mobdeve.s11.group8.finalproject
 
-class User {
-    var email: String
-        private set
-    var username: String
-        private set
-    var password: String
-        private set
+import java.lang.Thread
+import java.util.ArrayList
 
-    constructor(email: String, username: String, password: String) {
-        this.email = email
-        this.username = username
-        this.password = password
+class User(val email: String, val name: String, val password: String) {
+    val userId: String? = null
+    val threads: ArrayList<Thread> = ArrayList<Thread>()
+
+    fun addThread(thread: java.lang.Thread) {
+        threads.add(thread)
     }
 }
