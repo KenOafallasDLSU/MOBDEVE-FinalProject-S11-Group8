@@ -4,20 +4,17 @@ import java.util.*
 import kotlin.collections.ArrayList
 
 class Thread constructor(
-    var id: String,
     var users: ArrayList<String>,
-    var chats: ArrayList<String>,
-    var updated: Calendar,
+    var chats: ArrayList<Chat>,
 ) {
     fun getOtherUser(id : String) : String {
         if (users[0] == id){ return users[1] }
         return users[0]
     }
     fun getLastChat() : String {
-        return chats.last()
+        return chats.last().body
     }
     fun getLastUpdated(): String {
-        val dateTimeFormat = SimpleDateFormat("MMM d, yyyy h:mm a")
-        return dateTimeFormat.format(this.updated.time)
+        return this.chats.last().getDateTimeString()
     }
 }
