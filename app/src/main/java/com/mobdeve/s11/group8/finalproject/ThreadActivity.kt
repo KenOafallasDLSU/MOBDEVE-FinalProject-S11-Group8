@@ -18,7 +18,8 @@ class ThreadActivity : AppCompatActivity(), OnItemClickListener {
 
     private lateinit var threadAdapter: ThreadAdapter
     private lateinit var btnAdd : FloatingActionButton
-    private var threads: List<Thread> = ArrayList()
+    private lateinit var threads: ArrayList<Thread>
+    private lateinit var threadIds: List<String>
 
     // for other user
     private  var profileId:String? = null
@@ -32,16 +33,6 @@ class ThreadActivity : AppCompatActivity(), OnItemClickListener {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_thread)
-
-        btnAdd = findViewById(R.id.btn_thread_add)
-        btnAdd.setOnClickListener { v ->
-            var email = etEmail?.text.toString().trim()
-            if (email != "" && userId != ""){
-                searchEmails(email)
-            } else {
-                Toast.makeText(this,"Email cannot be blank.", Toast.LENGTH_SHORT).show()
-            }
-        }
 
         initRecyclerView()
         initFirebase()
@@ -70,15 +61,14 @@ class ThreadActivity : AppCompatActivity(), OnItemClickListener {
                             arrayOf(userId.toString(), profileId.toString()).toCollection(ArrayList<String>()),
                             arrayOf(
                                 Chat(
-                                    "0",
-                                    "2",
-                                    "Thanks for hiring me boss!!!",
+                                    userId.toString(),
+                                    profileId.toString(),
+                                    "Test",
                                     GregorianCalendar(2021,7,17,20,21,0)
                                 )
                             ).toCollection(ArrayList<Chat>()),
                         )
 
-                        // push thread to database
                         database?.getReference(Collections.threads.name)
                             ?.push()
                             ?.setValue(thread)?.addOnCompleteListener { task ->
@@ -111,23 +101,13 @@ class ThreadActivity : AppCompatActivity(), OnItemClickListener {
         database = FirebaseDatabase.getInstance()
         reference = database!!.getReference().child(Keys.USERS.name)
         user =  FirebaseAuth.getInstance().currentUser
-        userId = user?.uid ?: ""
+        userId = user?.uid
     }
 
     private fun initData(){
         // get threads from currently logged in user
-        this.threads = arrayOf(Thread(
-            arrayOf(userId.toString(), "WdEr6aKYOwZTbsAIvrsN9u2ftjM2").toCollection(ArrayList<String>()),
-            arrayOf(
-                Chat(
-                    "0",
-                    "2",
-                    "Thanks for hiring me boss!!!",
-                    GregorianCalendar(2021,7,17,20,21,0)
-                )
-            ).toCollection(ArrayList<Chat>()),
-        )).toCollection(ArrayList<Thread>())
-        threadAdapter.submitList(threads)
+        this.threadIds = arrayOf("-Mhln9-lImhb5B0SiAI-", "-MhluSWS_6b8wKOGCsta", "-MhnGb6a7SP7en7oCjV2").toCollection(ArrayList<String>());
+        threadAdapter.submitList(threadIds)
     }
 
     private fun initRecyclerView(){
@@ -137,12 +117,22 @@ class ThreadActivity : AppCompatActivity(), OnItemClickListener {
         rvThreads.adapter = threadAdapter
 
         etEmail = findViewById(R.id.et_thread_email)
+        btnAdd = findViewById(R.id.btn_thread_add)
+        btnAdd.setOnClickListener { v ->
+            var email = etEmail?.text.toString().trim()
+            if (email != "" && userId != ""){
+                searchEmails(email)
+            } else {
+                Toast.makeText(this,"Email cannot be blank.", Toast.LENGTH_SHORT).show()
+            }
+        }
     }
 
     override fun onItemClick(position: Int) {
         val intent = Intent(this, ChatActivity::class.java)
-        intent.putExtra(Keys.THREAD_ID_KEY.name, threads[position].toString())
-        startActivity(intent);
+        intent.putExtra(Keys.THREAD_ID_KEY.name, threadIds[position])
+        Toast.makeText(this, threadIds[position], Toast.LENGTH_SHORT).show()
+        //startActivity(intent);
     }
 
     override fun onResume() {
