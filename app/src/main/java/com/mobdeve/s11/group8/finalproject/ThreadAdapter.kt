@@ -20,7 +20,7 @@ interface OnItemClickListener{
 
 class ThreadAdapter(var listener: OnItemClickListener) : RecyclerView.Adapter<RecyclerView.ViewHolder>(){
 
-    private var items: List<Thread> = ArrayList()
+    private var items: List<String> = ArrayList()
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): RecyclerView.ViewHolder {
         return ThreadViewHolder(
@@ -40,7 +40,7 @@ class ThreadAdapter(var listener: OnItemClickListener) : RecyclerView.Adapter<Re
         return items.size
     }
 
-    fun submitList(threads : List<Thread>){
+    fun submitList(threads : List<String>){
         this.items = threads
     }
 
@@ -51,9 +51,11 @@ class ThreadAdapter(var listener: OnItemClickListener) : RecyclerView.Adapter<Re
         private var reference: DatabaseReference? = null
         private var user: FirebaseUser? = null
         private var userId: String? = null
-        private lateinit var  thread: Thread
+        private var thread: Thread? = null
 
         private var senderName: String? = null
+        private var lastUpdated: String? = null
+        private var lastChat: String? = null
         private var senderId : String? = null
 
         val avatarLetter : TextView = itemView.findViewById(R.id.tv_thread_item_avatar_letter)
@@ -63,45 +65,65 @@ class ThreadAdapter(var listener: OnItemClickListener) : RecyclerView.Adapter<Re
         val avatarBackground : CircleImageView = itemView.findViewById(R.id.iv_thread_item_avatar)
         val item : CardView = itemView.findViewById(R.id.cv_item_thread)
 
-        fun bind(thread : Thread, listener : OnItemClickListener) {
+        fun bind(threadId : String, listener : OnItemClickListener) {
 
             initFirebase()
 
-            this.thread = thread
-            this.senderId  = thread.getOtherUser(userId.toString())
+            // get other user from database
+            database!!.reference.child(Collections.threads.name).child(threadId)
+                .addListenerForSingleValueEvent(object : ValueEventListener {
+                    override fun onDataChange(snapshot: DataSnapshot) {
+                        lastUpdated = snapshot.child("lastUpdated").value.toString()
+                        lastChat = snapshot.child("lastChat").value.toString()
 
-            reference?.child(senderId!!)?.child("name")?.addListenerForSingleValueEvent(object : ValueEventListener {
-                override fun onDataChange(snapshot: DataSnapshot) {
-                    senderName = snapshot.value.toString()
-                    initComponents()
-                }
-                override fun onCancelled(error: DatabaseError) {
-                    senderName = "user"
-                }
-            })
+                        var tempusers = snapshot.child("users").value as ArrayList<String>
+                        if (tempusers[0] == userId){
+                            senderId = tempusers[1]
+                        } else {
+                            senderId = tempusers[0]
+                        }
+
+                        reference?.child(senderId!!)?.child("name")?.addListenerForSingleValueEvent(object : ValueEventListener {
+                            override fun onDataChange(snapshot: DataSnapshot) {
+                                senderName = snapshot.value.toString()
+                                initComponents()
+                            }
+                            override fun onCancelled(error: DatabaseError) {
+                                senderName = "user"
+                            }
+                        })
+
+                        initComponents()
+                    }
+                    override fun onCancelled(error: DatabaseError) {
+                        println("cannot find thread")
+                    }
+                })
+
 
             this.item.setOnClickListener{
                 listener.onItemClick(adapterPosition)
             }
 
+            initComponents()
         }
 
         fun initComponents(){
-            val color: Int = itemView.getResources()
+            displayName.setText(senderName)
+            avatarLetter.setText(senderName?.get(0)?.toString())
+            textMessage.setText(lastChat)
+            date.setText(lastUpdated)
+            val color: Int = itemView.resources
                 .getIntArray(R.array.appcolors)[(senderName?.length
                 ?: 0) % 5]
-            avatarLetter.setText(senderName?.get(0)?.toString())
-            textMessage.setText(thread.getLastChat())
-            displayName.setText(senderName)
-            date.setText(thread.getLastUpdated())
             avatarBackground.background.setTint(color)
         }
 
         fun initFirebase(){
             database = FirebaseDatabase.getInstance()
-            reference = database!!.getReference().child(Keys.USERS.name)
+            reference = database!!.reference.child(Keys.USERS.name)
             user =  FirebaseAuth.getInstance().currentUser
-            userId = user?.uid ?: ""
+            userId = user?.uid
         }
     }
 }
