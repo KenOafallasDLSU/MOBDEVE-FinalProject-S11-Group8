@@ -3,15 +3,14 @@ package com.mobdeve.s11.group8.finalproject
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.ProgressBar
 import android.widget.TextView
-import android.widget.Toast
 import androidx.cardview.widget.CardView
 import androidx.recyclerview.widget.RecyclerView
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.FirebaseUser
 import com.google.firebase.database.*
 import de.hdodenhof.circleimageview.CircleImageView
-import java.util.*
 import kotlin.collections.ArrayList
 
 interface OnItemClickListener{
@@ -46,54 +45,66 @@ class ThreadAdapter(var listener: OnItemClickListener) : RecyclerView.Adapter<Re
 
     class ThreadViewHolder constructor(itemView : View) : RecyclerView.ViewHolder(itemView){
 
-        private var senderName: String? = null
+        private var senderName : String? = null
         private var lastUpdated: String? = null
         private var lastChat: String? = null
         private var otherId : String? = null
 
-        val avatarLetter : TextView = itemView.findViewById(R.id.tv_thread_item_avatar_letter)
-        val displayName : TextView = itemView.findViewById(R.id.tv_thread_item_name)
-        val textMessage : TextView = itemView.findViewById(R.id.tv_thread_item_text)
-        val date : TextView = itemView.findViewById(R.id.tv_thread_item_time)
-        val avatarBackground : CircleImageView = itemView.findViewById(R.id.iv_thread_item_avatar)
-        val item : CardView = itemView.findViewById(R.id.cv_item_thread)
+        private lateinit var tvAvatarLetter : TextView
+        private lateinit var tvDisplayName : TextView
+        private lateinit var tvTextMessage : TextView
+        private lateinit var tvDate : TextView
+        private lateinit var ivAvatarBackground : CircleImageView
+        private lateinit var cvItem : CardView
+        private lateinit var pBar : ProgressBar
 
-        private var database: FirebaseDatabase? = null
-        private var reference: DatabaseReference? = null
-        private var user: FirebaseUser? = null
-        private var userId: String? = null
+        private lateinit var database: FirebaseDatabase
+        private lateinit var reference: DatabaseReference
+        private lateinit var user: FirebaseUser
+        private lateinit var userId: String
 
         fun bind(threadId : String, listener : OnItemClickListener) {
 
-            this.item.setOnClickListener{
+            initFirebase()
+
+            tvAvatarLetter = itemView.findViewById(R.id.tv_thread_item_avatar_letter)
+            tvDisplayName = itemView.findViewById(R.id.tv_thread_item_name)
+            tvTextMessage  = itemView.findViewById(R.id.tv_thread_item_text)
+            tvDate = itemView.findViewById(R.id.tv_thread_item_time)
+            ivAvatarBackground = itemView.findViewById(R.id.iv_thread_item_avatar)
+            cvItem = itemView.findViewById(R.id.cv_item_thread)
+            pBar = itemView.findViewById(R.id.pb_thread_item)
+
+            this.cvItem.setOnClickListener{
                 listener.onItemClick(adapterPosition)
             }
 
-            initFirebase()
-
             // retrieve thread from database
-            database!!.reference.child(Collections.threads.name).child(threadId)
+            pBar.setVisibility(View.VISIBLE)
+            database.reference.child(Collections.threads.name).child(threadId)
                 .addListenerForSingleValueEvent(object : ValueEventListener {
                     override fun onDataChange(snapshot: DataSnapshot) {
+                        val temp = snapshot.child(Collections.users.name).value as ArrayList<String>
+                        otherId = if (temp[0] == userId){ temp[1] } else { temp[0] }
 
-                        val tempusers = snapshot.child("users").value as ArrayList<String>
-                        otherId = if (tempusers[0] == userId){ tempusers[1] } else { tempusers[0] }
-
-                        lastUpdated = snapshot.child("lastUpdated").value.toString()
-                        lastChat = snapshot.child("lastChat").value.toString()
+                        lastUpdated = snapshot.child(Collections.lastUpdated.name).value.toString()
+                        lastChat = snapshot.child(Collections.lastChat.name).value.toString()
 
                         // retrieve other user's name from database
-                        reference?.child(otherId!!)?.child("name")?.addListenerForSingleValueEvent(object : ValueEventListener {
+                        reference.child(otherId!!).child(Collections.name.name).addListenerForSingleValueEvent(object : ValueEventListener {
                             override fun onDataChange(snapshot: DataSnapshot) {
                                 senderName = snapshot.value.toString()
                                 updateComponents()
+                                pBar.setVisibility(View.GONE)
                             }
                             override fun onCancelled(error: DatabaseError) {
                                 senderName = "user"
+                                pBar.setVisibility(View.GONE)
                             }
                         })
 
                         updateComponents()
+                        pBar.setVisibility(View.GONE)
                     }
                     override fun onCancelled(error: DatabaseError) {
                         println(error)
@@ -102,21 +113,19 @@ class ThreadAdapter(var listener: OnItemClickListener) : RecyclerView.Adapter<Re
         }
 
         fun updateComponents(){
-            displayName.setText(senderName)
-            avatarLetter.setText(senderName?.get(0)?.toString())
-            textMessage.setText(lastChat)
-            date.setText(lastUpdated)
-            val color: Int = itemView.resources
-                .getIntArray(R.array.appcolors)[(senderName?.length
-                ?: 0) % 5]
-            avatarBackground.background.setTint(color)
+            tvDisplayName.setText(senderName)
+            tvAvatarLetter.setText(senderName?.get(0)?.toString())
+            tvTextMessage.setText(lastChat)
+            tvDate.setText(lastUpdated)
+            val color: Int = itemView.resources.getIntArray(R.array.appcolors)[(senderName?.length ?: 0) % 5]
+            ivAvatarBackground.background.setTint(color)
         }
 
         fun initFirebase(){
             database = FirebaseDatabase.getInstance()
-            reference = database!!.reference.child(Keys.USERS.name)
-            user =  FirebaseAuth.getInstance().currentUser
-            userId = user?.uid
+            reference = database.reference.child(Keys.USERS.name)
+            user = FirebaseAuth.getInstance().currentUser!!
+            userId = user.uid
         }
     }
 }
