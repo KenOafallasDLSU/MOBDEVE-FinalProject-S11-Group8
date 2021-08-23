@@ -7,12 +7,22 @@ import android.widget.Toast
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.google.android.material.floatingactionbutton.FloatingActionButton
+import com.google.firebase.auth.FirebaseAuth
+import com.google.firebase.auth.FirebaseUser
+import com.google.firebase.database.DatabaseReference
+import com.google.firebase.database.FirebaseDatabase
 
 class ThreadActivity : AppCompatActivity(), OnItemClickListener {
 
     private lateinit var threadAdapter: ThreadAdapter
     private lateinit var btnAdd : FloatingActionButton
     private var threads: List<Thread> = ArrayList()
+
+    private var database: FirebaseDatabase? = null
+    private var reference: DatabaseReference? = null
+
+    private var user: FirebaseUser? = null
+    private var userId: String? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -26,7 +36,17 @@ class ThreadActivity : AppCompatActivity(), OnItemClickListener {
         }
 
         initRecyclerView()
+        initFirebase()
         initData()
+    }
+
+    private fun initFirebase() {
+        database = FirebaseDatabase.getInstance()
+        reference = database!!.getReference().child(Collections.users.name)
+        user =  FirebaseAuth.getInstance().currentUser
+        userId = user?.uid ?: ""
+        // get threads from currently logged in user
+        Toast.makeText(this, userId, Toast.LENGTH_SHORT).show()
     }
 
     private fun initData(){
