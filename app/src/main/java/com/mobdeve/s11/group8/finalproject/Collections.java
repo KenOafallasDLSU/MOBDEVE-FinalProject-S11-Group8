@@ -4,5 +4,6 @@ public enum Collections {
     users,
     threads,
     chats,
-    email
+    email,
+    name
 }
