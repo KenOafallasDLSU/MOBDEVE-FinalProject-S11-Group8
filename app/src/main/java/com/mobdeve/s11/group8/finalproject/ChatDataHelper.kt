@@ -9,7 +9,6 @@ class ChatDataHelper{
             val list = ArrayList<Chat>()
             list.add(
                 Chat(
-                    "0",
                     "2",
                     "1",
                     "Thanks for hiring me boss!!!",
@@ -19,7 +18,6 @@ class ChatDataHelper{
             list.add(
                 Chat(
                     "1",
-                    "1",
                     "2",
                     "Meet me at these coordinates tonight 02:00 sharp",
                     GregorianCalendar(2021,7,21,20,32,0)
@@ -28,7 +26,6 @@ class ChatDataHelper{
             list.add(
                 Chat(
                     "2",
-                    "2",
                     "1",
                     "Okii noted c:",
                     GregorianCalendar(2021,7,21,21,21,0)
@@ -36,7 +33,6 @@ class ChatDataHelper{
             )
             list.add(
                 Chat(
-                    "3",
                     "2",
                     "1",
                     "What should I bring againn??",
@@ -45,7 +41,6 @@ class ChatDataHelper{
             )
             list.add(
                 Chat(
-                    "4",
                     "1",
                     "2",
                     "Bring a shovel and a flashlight. Don't let anyone follow you",
@@ -54,7 +49,6 @@ class ChatDataHelper{
             )
             list.add(
                 Chat(
-                    "5",
                     "2",
                     "1",
                     "rightt i'll be there!!",

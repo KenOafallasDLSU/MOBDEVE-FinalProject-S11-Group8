@@ -41,7 +41,7 @@ class ChatAdapter(private var chatList: ArrayList<Chat>) :
             chatHolder.setItemChatDate(this.chatList.get(position).getTimeString())
 
         //Chat bubble formatting
-        chatHolder.setItemChatBubbleFormat("1" == this.chatList.get(position).senderId)
+        chatHolder.setItemChatBubbleColor(this.chatList.get(position).senderId)
     }
 
     override fun getItemCount(): Int {
@@ -49,7 +49,7 @@ class ChatAdapter(private var chatList: ArrayList<Chat>) :
     }
 
     override fun getItemViewType(position: Int): Int {
-        if ("1" == this.chatList.get(position).senderId)
+        if ("Mica" == this.chatList.get(position).senderId)
             return LEFT_LAYOUT
         else
             return RIGHT_LAYOUT

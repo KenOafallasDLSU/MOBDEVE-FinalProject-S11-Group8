@@ -1,20 +1,22 @@
 package com.mobdeve.s11.group8.finalproject
 
-import androidx.appcompat.app.AppCompatActivity
+import android.content.Intent
 import android.os.Bundle
-import android.widget.EditText
-import android.widget.ImageButton
-import android.widget.ImageView
-import android.widget.TextView
+import android.util.Log
+import android.widget.*
+import androidx.appcompat.app.AppCompatActivity
 import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import com.google.firebase.database.*
+import java.util.*
+import kotlin.collections.ArrayList
 
 class ChatActivity : AppCompatActivity() {
     private lateinit var rvChat: RecyclerView
     private lateinit var chatManager: RecyclerView.LayoutManager
     private lateinit var chatAdapter: ChatAdapter
-    private lateinit var chatList: ArrayList<Chat>
+    private val chatList: ArrayList<Chat> = ArrayList()
 
     private lateinit var etChatInput: EditText
     private lateinit var clChatHead: ConstraintLayout
@@ -27,8 +29,14 @@ class ChatActivity : AppCompatActivity() {
     private lateinit var ibChatCall: ImageButton
     private lateinit var ibChatSend: ImageButton
 
-    private var user1 = "Thea"
-    private var user2 = "Michaela"
+    // get current user from auth
+    private lateinit var user1: String
+    private lateinit var user2: String
+    private lateinit var currentThread: String
+
+    private val rootRef = FirebaseDatabase.getInstance().reference
+    private lateinit var threadRef: DatabaseReference
+    private lateinit var chatsRef: DatabaseReference
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -41,16 +49,29 @@ class ChatActivity : AppCompatActivity() {
         this.tvChatName = findViewById(R.id.tv_chat_name)
         this.clChatFoot = findViewById(R.id.cl_chat_foot)
 
+        //get thread extra
+        intent = getIntent()
+        this.currentThread = intent.getStringExtra(Keys.THREAD_ID_KEY.name).toString()
+
+        //get user 1
+        this.user1 = "Ellen"
+        //get user 2
+        this.user2 = "Mica"
+
+        this.threadRef = rootRef.child("threads").child(this.currentThread)
+        this.chatsRef = this.threadRef.child("chats")
+
         this.initChatThreadDesign()
         this.initRecyclerView()
         this.initChatBack()
         this.initChatCall()
         this.initChatSend()
+        this.initListener()
     }
 
     private fun initChatThreadDesign() {
-        val color1: Int = getResources().getIntArray(R.array.appcolors)[user1.length%5]
-        val color2: Int = getResources().getIntArray(R.array.appcolors)[user2.length%5]
+        val color1: Int = resources.getIntArray(R.array.appcolors)[user1.length%5]
+        val color2: Int = resources.getIntArray(R.array.appcolors)[user2.length%5]
         this.clChatHead.background.setTint(color1)
         this.ivChatAvatar.background.setTint(color2)
         this.tvChatAvatarLetter.text = user2[0].toString()
@@ -66,13 +87,8 @@ class ChatActivity : AppCompatActivity() {
         this.rvChat.layoutManager = this.chatManager
 
         //init adapter
-        this.initData()
         this.chatAdapter = ChatAdapter(this.chatList)
         this.rvChat.adapter = this.chatAdapter
-    }
-
-    private fun initData() {
-        this.chatList = ChatDataHelper.initData()
     }
 
     private fun initChatBack() {
@@ -92,7 +108,61 @@ class ChatActivity : AppCompatActivity() {
     private fun initChatSend() {
         this.ibChatSend = findViewById(R.id.ib_chat_send)
         this.ibChatSend.setOnClickListener {
+            if(etChatInput.text.toString() != "") {
+                val newChat = Chat(user1, user2, etChatInput.text.toString(), Calendar.getInstance())
+                val newChatId = threadRef.push().key.toString()
+                chatsRef.child(newChatId).child("senderId").setValue(newChat.senderId)
+                chatsRef.child(newChatId).child("receiverId").setValue(newChat.receiverId)
+                chatsRef.child(newChatId).child("body").setValue(newChat.body)
+                chatsRef.child(newChatId).child("dateTimeSent").setValue(newChat.dateTimeSent.timeInMillis)
+            } else {
+                Toast.makeText(applicationContext,"Enter a message",Toast.LENGTH_SHORT).show()
+            }
 
+            etChatInput.setText("")
         }
+    }
+
+    private fun initListener() {
+        val chatListener = object : ChildEventListener {
+            override fun onChildAdded(dataSnapshot: DataSnapshot, previousChildName: String?) {
+                // Get Post object and use the values to update the UI
+                val chatKey = dataSnapshot.key.toString()
+                Log.w("ChatActivityXXX", chatKey)
+                val newChatRef = chatsRef.child(chatKey)
+
+                newChatRef.addListenerForSingleValueEvent(object : ValueEventListener {
+                    override fun onDataChange(snapshot: DataSnapshot) {
+                        val newCalendar = Calendar.getInstance()
+                        newCalendar.timeInMillis = snapshot.child("dateTimeSent").getValue() as Long
+                        chatList.add(
+                            Chat(
+                                snapshot.child("senderId").getValue().toString(),
+                                snapshot.child("receiverId").getValue().toString(),
+                                snapshot.child("body").getValue().toString(),
+                                newCalendar
+                            )
+                        )
+                        chatAdapter.notifyItemChanged(chatList.lastIndex)
+                        chatAdapter.notifyItemRangeChanged(chatList.lastIndex, chatAdapter.getItemCount())
+
+                        rvChat.smoothScrollToPosition(chatAdapter.getItemCount()- 1)
+                    }
+
+                    override fun onCancelled(error: DatabaseError) {}
+                })
+            }
+
+            override fun onChildChanged(snapshot: DataSnapshot, previousChildName: String?) {}
+            override fun onChildRemoved(snapshot: DataSnapshot) {}
+            override fun onChildMoved(snapshot: DataSnapshot, previousChildName: String?) {}
+
+            override fun onCancelled(databaseError: DatabaseError) {
+                // Getting Post failed, log a message
+                Log.w("ChatActivity", "loadPost:onCancelled", databaseError.toException())
+            }
+        }
+
+        this.chatsRef.addChildEventListener(chatListener)
     }
 }
