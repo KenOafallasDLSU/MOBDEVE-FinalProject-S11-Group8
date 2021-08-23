@@ -21,19 +21,7 @@ class ChatViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
         this.tvItemChatDate.text = date
     }
 
-    fun setItemChatBubbleFormat(senderIsUser: Boolean) {
-        if (senderIsUser) {
-//            val constraintSet = ConstraintSet()
-//            constraintSet.clone(this.clItemChatBubble)
-//            constraintSet.connect(R.id.cl_item_chat_bubble, ConstraintSet.START, R.id.gl_item_chat_right_limit, ConstraintSet.START, 0)
-//            constraintSet.connect(R.id.cl_item_chat_bubble, ConstraintSet.END, ConstraintSet.PARENT_ID, ConstraintSet.END, 0)
-//            constraintSet.setHorizontalBias(R.id.cl_item_chat_bubble,1.0f)
-//            constraintSet.applyTo(this.clItemChatBubble)
-
-            this.clItemChatBubble.background.setTint(itemView.getResources().getIntArray(R.array.appcolors)["Michaela".length%5])
-        }
-        else {
-            this.clItemChatBubble.background.setTint(itemView.getResources().getIntArray(R.array.appcolors)["Thea".length%5])
-        }
+    fun setItemChatBubbleColor(sender: String) {
+        this.clItemChatBubble.background.setTint(itemView.getResources().getIntArray(R.array.appcolors)[sender.length%5])
     }
 }

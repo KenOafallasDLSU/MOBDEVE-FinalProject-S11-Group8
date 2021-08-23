@@ -4,11 +4,10 @@ import java.text.SimpleDateFormat
 import java.util.*
 
 class Chat(
-    val id: String,
     val senderId: String,
     val receiverId: String,
     val body: String,
-    private val dateTimeSent: Calendar
+    val dateTimeSent: Calendar
 ) {
     fun getTimeString(): String{
         val timeFormat = SimpleDateFormat("h:mm a")
