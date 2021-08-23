@@ -18,10 +18,8 @@ class ThreadActivity : AppCompatActivity(), OnItemClickListener {
 
     private lateinit var threadAdapter: ThreadAdapter
     private lateinit var btnAdd : FloatingActionButton
-    private lateinit var threads: ArrayList<Thread>
     private lateinit var threadIds: List<String>
 
-    // for other user
     private  var profileId:String? = null
     private var etEmail : EditText? = null
 
@@ -47,52 +45,42 @@ class ThreadActivity : AppCompatActivity(), OnItemClickListener {
                     // look for data in the database
                     for (data in snapshot.children) {
                         profileId = data.key
-                        Toast.makeText(
-                            this@ThreadActivity,
-                            profileId,
-                            Toast.LENGTH_SHORT
-                        ).show()
                     }
 
                     if (userId != profileId) {
-
-                        // create new thread
                         val thread = Thread(
                             arrayOf(userId.toString(), profileId.toString()).toCollection(ArrayList<String>()),
                             arrayOf(
                                 Chat(
                                     userId.toString(),
                                     profileId.toString(),
-                                    "Test",
-                                    GregorianCalendar(2021,7,17,20,21,0)
+                                    "",
+                                    Calendar.getInstance()
                                 )
                             ).toCollection(ArrayList<Chat>()),
                         )
 
-                        database?.getReference(Collections.threads.name)
-                            ?.push()
-                            ?.setValue(thread)?.addOnCompleteListener { task ->
-                                if (task.isSuccessful) {
-                                    Toast.makeText(this@ThreadActivity,"Added thread with " + profileId.toString(), Toast.LENGTH_SHORT).show()
-                                } else {
-                                    Toast.makeText(this@ThreadActivity,"Failed to add thread", Toast.LENGTH_SHORT).show()
+                        var newThreadKey = database?.getReference(Collections.threads.name)?.push()?.key
+                        if (newThreadKey != null) {
+                            database?.getReference(Collections.threads.name)?.child(newThreadKey)
+                                ?.setValue(thread)?.addOnCompleteListener { task ->
+                                    if (task.isSuccessful) {
+                                        Toast.makeText(this@ThreadActivity,"Added thread with " + profileId.toString(), Toast.LENGTH_SHORT).show()
+                                        val intent = Intent(this@ThreadActivity, ChatActivity::class.java)
+                                        intent.putExtra(Keys.THREAD_ADD_NEW_KEY.name, newThreadKey.toString())
+                                        startActivity(intent)
+                                    } else {
+                                        Toast.makeText(this@ThreadActivity,"Failed to add thread", Toast.LENGTH_SHORT).show()
+                                    }
                                 }
-                            }
+                        }
 
                     } else {
-                        Toast.makeText(
-                            this@ThreadActivity,
-                            "Hmm, you can't add yourself.",
-                            Toast.LENGTH_SHORT
-                        ).show()
+                        Toast.makeText(this@ThreadActivity, "You can't add yourself.", Toast.LENGTH_SHORT).show()
                     }
                 }
                 override fun onCancelled(error: DatabaseError) {
-                    Toast.makeText(
-                        this@ThreadActivity,
-                        "Cannot find user.",
-                        Toast.LENGTH_SHORT
-                    ).show()
+                    Toast.makeText(this@ThreadActivity, "Cannot find user.", Toast.LENGTH_SHORT).show()
                 }
             })
     }
@@ -132,11 +120,11 @@ class ThreadActivity : AppCompatActivity(), OnItemClickListener {
         val intent = Intent(this, ChatActivity::class.java)
         intent.putExtra(Keys.THREAD_ID_KEY.name, threadIds[position])
         Toast.makeText(this, threadIds[position], Toast.LENGTH_SHORT).show()
-        //startActivity(intent);
+        startActivity(intent);
     }
 
     override fun onResume() {
         super.onResume()
-        // TODO: update view
+        initData()
     }
 }

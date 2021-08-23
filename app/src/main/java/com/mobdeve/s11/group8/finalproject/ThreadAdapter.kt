@@ -44,19 +44,12 @@ class ThreadAdapter(var listener: OnItemClickListener) : RecyclerView.Adapter<Re
         this.items = threads
     }
 
-    // Thread View Holder
     class ThreadViewHolder constructor(itemView : View) : RecyclerView.ViewHolder(itemView){
-
-        private var database: FirebaseDatabase? = null
-        private var reference: DatabaseReference? = null
-        private var user: FirebaseUser? = null
-        private var userId: String? = null
-        private var thread: Thread? = null
 
         private var senderName: String? = null
         private var lastUpdated: String? = null
         private var lastChat: String? = null
-        private var senderId : String? = null
+        private var otherId : String? = null
 
         val avatarLetter : TextView = itemView.findViewById(R.id.tv_thread_item_avatar_letter)
         val displayName : TextView = itemView.findViewById(R.id.tv_thread_item_name)
@@ -65,50 +58,50 @@ class ThreadAdapter(var listener: OnItemClickListener) : RecyclerView.Adapter<Re
         val avatarBackground : CircleImageView = itemView.findViewById(R.id.iv_thread_item_avatar)
         val item : CardView = itemView.findViewById(R.id.cv_item_thread)
 
+        private var database: FirebaseDatabase? = null
+        private var reference: DatabaseReference? = null
+        private var user: FirebaseUser? = null
+        private var userId: String? = null
+
         fun bind(threadId : String, listener : OnItemClickListener) {
+
+            this.item.setOnClickListener{
+                listener.onItemClick(adapterPosition)
+            }
 
             initFirebase()
 
-            // get other user from database
+            // retrieve thread from database
             database!!.reference.child(Collections.threads.name).child(threadId)
                 .addListenerForSingleValueEvent(object : ValueEventListener {
                     override fun onDataChange(snapshot: DataSnapshot) {
+
+                        val tempusers = snapshot.child("users").value as ArrayList<String>
+                        otherId = if (tempusers[0] == userId){ tempusers[1] } else { tempusers[0] }
+
                         lastUpdated = snapshot.child("lastUpdated").value.toString()
                         lastChat = snapshot.child("lastChat").value.toString()
 
-                        var tempusers = snapshot.child("users").value as ArrayList<String>
-                        if (tempusers[0] == userId){
-                            senderId = tempusers[1]
-                        } else {
-                            senderId = tempusers[0]
-                        }
-
-                        reference?.child(senderId!!)?.child("name")?.addListenerForSingleValueEvent(object : ValueEventListener {
+                        // retrieve other user's name from database
+                        reference?.child(otherId!!)?.child("name")?.addListenerForSingleValueEvent(object : ValueEventListener {
                             override fun onDataChange(snapshot: DataSnapshot) {
                                 senderName = snapshot.value.toString()
-                                initComponents()
+                                updateComponents()
                             }
                             override fun onCancelled(error: DatabaseError) {
                                 senderName = "user"
                             }
                         })
 
-                        initComponents()
+                        updateComponents()
                     }
                     override fun onCancelled(error: DatabaseError) {
-                        println("cannot find thread")
+                        println(error)
                     }
                 })
-
-
-            this.item.setOnClickListener{
-                listener.onItemClick(adapterPosition)
-            }
-
-            initComponents()
         }
 
-        fun initComponents(){
+        fun updateComponents(){
             displayName.setText(senderName)
             avatarLetter.setText(senderName?.get(0)?.toString())
             textMessage.setText(lastChat)
