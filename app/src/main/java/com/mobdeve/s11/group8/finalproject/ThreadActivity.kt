@@ -17,16 +17,16 @@ import kotlin.collections.ArrayList
 class ThreadActivity : AppCompatActivity(), OnItemClickListener {
 
     private lateinit var threadAdapter: ThreadAdapter
-    private lateinit var btnAdd : FloatingActionButton
-    private lateinit var threadIds: List<String>
+    private lateinit var btnAdd: FloatingActionButton
+    private lateinit var threadIds: ArrayList<String>
 
-    private  var profileId:String? = null
-    private var etEmail : EditText? = null
+    private lateinit var profileId: String
+    private lateinit var etEmail: EditText
 
-    private var database: FirebaseDatabase? = null
-    private var reference: DatabaseReference? = null
-    private var user: FirebaseUser? = null
-    private var userId: String? = null
+    private lateinit var database: FirebaseDatabase
+    private lateinit var reference: DatabaseReference
+    private lateinit var user: FirebaseUser
+    private lateinit var userId: String
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -38,62 +38,50 @@ class ThreadActivity : AppCompatActivity(), OnItemClickListener {
     }
 
     private fun searchEmails(email : String){
-        reference?.orderByChild(Collections.email.name)?.equalTo(email)
-            ?.addListenerForSingleValueEvent(object : ValueEventListener {
+        this.reference.orderByChild(Collections.email.name).equalTo(email)
+            .addListenerForSingleValueEvent(object : ValueEventListener {
                 override fun onDataChange(snapshot: DataSnapshot) {
 
-                    // look for data in the database
-                    for (data in snapshot.children) {
-                        profileId = data.key
-                    }
+                    profileId = snapshot.key.toString()
 
                     if (userId != profileId) {
                         val thread = Thread(
-                            arrayOf(userId.toString(), profileId.toString()).toCollection(ArrayList<String>()),
-                            arrayOf(
-                                Chat(
-                                    userId.toString(),
-                                    profileId.toString(),
-                                    "",
-                                    Calendar.getInstance()
-                                )
+                            arrayOf(userId, profileId).toCollection(ArrayList<String>()),
+                            arrayOf(Chat(userId, profileId, "", Calendar.getInstance())
                             ).toCollection(ArrayList<Chat>()),
                         )
 
-                        var newThreadKey = database?.getReference(Collections.threads.name)?.push()?.key
+                        val newThreadKey = database.getReference(Collections.threads.name).push().key
                         if (newThreadKey != null) {
-                            database?.getReference(Collections.threads.name)?.child(newThreadKey)
-                                ?.setValue(thread)?.addOnCompleteListener { task ->
+                            database.getReference(Collections.threads.name).child(newThreadKey)
+                                .setValue(thread).addOnCompleteListener { task ->
                                     if (task.isSuccessful) {
-                                        Toast.makeText(this@ThreadActivity,"Added thread with " + profileId.toString(), Toast.LENGTH_SHORT).show()
                                         val intent = Intent(this@ThreadActivity, ChatActivity::class.java)
                                         intent.putExtra(Keys.THREAD_ADD_NEW_KEY.name, newThreadKey.toString())
                                         startActivity(intent)
                                     } else {
-                                        Toast.makeText(this@ThreadActivity,"Failed to add thread", Toast.LENGTH_SHORT).show()
+                                        Toast.makeText(this@ThreadActivity,"Oh no! Something went wrong :(", Toast.LENGTH_SHORT).show()
                                     }
                                 }
                         }
-
                     } else {
-                        Toast.makeText(this@ThreadActivity, "You can't add yourself.", Toast.LENGTH_SHORT).show()
+                        Toast.makeText(this@ThreadActivity, "Hmm, you can't add yourself :/", Toast.LENGTH_SHORT).show()
                     }
                 }
                 override fun onCancelled(error: DatabaseError) {
-                    Toast.makeText(this@ThreadActivity, "Cannot find user.", Toast.LENGTH_SHORT).show()
+                    Toast.makeText(this@ThreadActivity, "Cannot find user :(", Toast.LENGTH_SHORT).show()
                 }
             })
     }
 
     private fun initFirebase() {
         database = FirebaseDatabase.getInstance()
-        reference = database!!.getReference().child(Keys.USERS.name)
-        user =  FirebaseAuth.getInstance().currentUser
-        userId = user?.uid
+        reference = database.reference.child(Keys.USERS.name)
+        user = FirebaseAuth.getInstance().currentUser!!
+        userId = user.uid
     }
 
     private fun initData(){
-        // get threads from currently logged in user
         this.threadIds = arrayOf("-Mhln9-lImhb5B0SiAI-", "-MhluSWS_6b8wKOGCsta", "-MhnGb6a7SP7en7oCjV2").toCollection(ArrayList<String>());
         threadAdapter.submitList(threadIds)
     }
@@ -107,11 +95,11 @@ class ThreadActivity : AppCompatActivity(), OnItemClickListener {
         etEmail = findViewById(R.id.et_thread_email)
         btnAdd = findViewById(R.id.btn_thread_add)
         btnAdd.setOnClickListener { v ->
-            var email = etEmail?.text.toString().trim()
-            if (email != "" && userId != ""){
+            val email = etEmail.text.toString().trim()
+            if (email.isNotEmpty() && userId.isNotEmpty()){
                 searchEmails(email)
             } else {
-                Toast.makeText(this,"Email cannot be blank.", Toast.LENGTH_SHORT).show()
+                Toast.makeText(this,"Email cannot be blank :P", Toast.LENGTH_SHORT).show()
             }
         }
     }

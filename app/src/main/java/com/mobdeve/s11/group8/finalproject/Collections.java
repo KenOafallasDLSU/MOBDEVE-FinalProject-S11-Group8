@@ -5,5 +5,7 @@ public enum Collections {
     threads,
     chats,
     email,
-    name
+    name,
+    lastUpdated,
+    lastChat
 }
