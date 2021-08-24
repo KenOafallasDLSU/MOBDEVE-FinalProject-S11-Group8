@@ -85,7 +85,23 @@ class RegisterActivity : AppCompatActivity() {
             hasEmpty = true
         }
 
+        if(!isValidEmail(etEmail.text.trim().toString())) {
+            this.etEmail.error = "Please enter a valid e-mail"
+            this.etName.requestFocus()
+            hasEmpty = true
+        }
+
+        if(password.length < 6) {
+            this.etPassword.error = "Password must be at least 6 characters"
+            this.etName.requestFocus()
+            hasEmpty = true
+        }
+
         return hasEmpty
+    }
+
+    private fun isValidEmail(str: String): Boolean{
+        return android.util.Patterns.EMAIL_ADDRESS.matcher(str).matches()
     }
 
     private fun storeUser(user: User) {
