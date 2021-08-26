@@ -47,19 +47,18 @@ class ThreadActivity : AppCompatActivity(), OnItemClickListener {
 
         this.reference.orderByChild(Collections.email.name).equalTo(email)
             .addListenerForSingleValueEvent(object : ValueEventListener {
-                override fun onDataChange(snapshot: DataSnapshot) {
 
+                override fun onDataChange(snapshot: DataSnapshot) {
                     if (snapshot.hasChildren()) {
-                        for (data in snapshot.children){
+
+                        for (data in snapshot.children)
                             profileId = data.key.toString()
-                        }
 
                         if (userId != profileId) {
-                            val thread = Thread(
-                                arrayOf(userId, profileId).toCollection(ArrayList<String>())
-                            )
 
+                            val thread = Thread(arrayOf(userId, profileId).toCollection(ArrayList<String>()))
                             val newThreadKey = database.getReference(Collections.threads.name).push().key
+
                             if (newThreadKey != null) {
                                 database.getReference(Collections.threads.name).child(newThreadKey)
                                 .setValue(thread).addOnCompleteListener { task ->
@@ -72,9 +71,11 @@ class ThreadActivity : AppCompatActivity(), OnItemClickListener {
                                     }
                                 }
                             }
+
                         } else {
                             Toast.makeText(this@ThreadActivity, "Hmm, you can't add yourself :/", Toast.LENGTH_SHORT).show()
                         }
+
                     } else {
                         Toast.makeText(this@ThreadActivity, "User does not exist :/", Toast.LENGTH_SHORT).show()
                     }
@@ -92,13 +93,12 @@ class ThreadActivity : AppCompatActivity(), OnItemClickListener {
         user = FirebaseAuth.getInstance().currentUser!!
         userId = user.uid
 
-        reference.child(userId).addListenerForSingleValueEvent(object : ValueEventListener {
+        this.reference.child(userId).addListenerForSingleValueEvent(object : ValueEventListener {
             override fun onDataChange(snapshot: DataSnapshot) {
                 letter = snapshot.child(Collections.name.name).value.toString().get(0).toString()
                 color = resources.getIntArray(R.array.appcolors)[(snapshot.value.toString().length) % 5]
                 tvThreadAvatarLetter.setText(letter)
                 tvThreadAvatarLetter.background.setTint(color)
-
             }
             override fun onCancelled(error: DatabaseError) {
                 Toast.makeText(this@ThreadActivity, "Oh no! Something went wrong :(", Toast.LENGTH_SHORT).show()
@@ -107,23 +107,18 @@ class ThreadActivity : AppCompatActivity(), OnItemClickListener {
     }
 
     private fun initData(){
-        threadIds = ArrayList()
-        reference.child(userId).child(Collections.threads.name).addListenerForSingleValueEvent(object : ValueEventListener{
+
+        this.reference.child(userId).child(Collections.threads.name).addListenerForSingleValueEvent(object : ValueEventListener{
             override fun onDataChange(snapshot: DataSnapshot) {
-                if (snapshot.hasChildren()) {
-                    for (data in snapshot.children){
-                        val data : String = snapshot.value.toString()
-                        threadIds.add(data)
-                    }
-                }
+                var list : ArrayList<String> = ArrayList()
+                for (data in snapshot.children) list.add(data.key.toString())
+                threadIds = list.toCollection(ArrayList<String>())
+                threadAdapter.submitList(threadIds)
+                threadAdapter.notifyDataSetChanged()
             }
-            override fun onCancelled(error: DatabaseError) {
-                TODO("Not yet implemented")
-            }
+            override fun onCancelled(error: DatabaseError) {}
         })
 
-
-        threadAdapter.submitList(threadIds)
     }
 
     private fun initRecyclerView(){
@@ -148,7 +143,6 @@ class ThreadActivity : AppCompatActivity(), OnItemClickListener {
     override fun onItemClick(position: Int) {
         val intent = Intent(this, ChatActivity::class.java)
         intent.putExtra(Keys.THREAD_ID_KEY.name, threadIds[position])
-        Toast.makeText(this, threadIds[position], Toast.LENGTH_SHORT).show()
         startActivity(intent);
     }
 
