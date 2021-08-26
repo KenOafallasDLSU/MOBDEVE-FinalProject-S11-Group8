@@ -84,27 +84,30 @@ class ThreadAdapter(var listener: OnItemClickListener) : RecyclerView.Adapter<Re
             database.reference.child(Collections.threads.name).child(threadId)
                 .addListenerForSingleValueEvent(object : ValueEventListener {
                     override fun onDataChange(snapshot: DataSnapshot) {
-                        val temp = snapshot.child(Collections.users.name).value as ArrayList<String>
-                        otherId = if (temp[0] == userId){ temp[1] } else { temp[0] }
 
-                        lastUpdated = snapshot.child(Collections.lastUpdated.name).value.toString()
-                        lastChat = snapshot.child(Collections.lastChat.name).value.toString()
+                        if (snapshot.hasChildren()){
+                            val temp = snapshot.child(Collections.users.name).value as ArrayList<String>
+                            otherId = if (temp[0] == userId){ temp[1] } else { temp[0] }
 
-                        // retrieve other user's name from database
-                        reference.child(otherId!!).child(Collections.name.name).addListenerForSingleValueEvent(object : ValueEventListener {
-                            override fun onDataChange(snapshot: DataSnapshot) {
-                                senderName = snapshot.value.toString()
-                                updateComponents()
-                                pBar.setVisibility(View.GONE)
-                            }
-                            override fun onCancelled(error: DatabaseError) {
-                                senderName = "user"
-                                pBar.setVisibility(View.GONE)
-                            }
-                        })
+                            lastUpdated = snapshot.child(Collections.lastUpdated.name).value.toString()
+                            lastChat = snapshot.child(Collections.lastChat.name).value.toString()
 
-                        updateComponents()
-                        pBar.setVisibility(View.GONE)
+                            // retrieve other user's name from database
+                            reference.child(otherId!!).child(Collections.name.name).addListenerForSingleValueEvent(object : ValueEventListener {
+                                override fun onDataChange(snapshot: DataSnapshot) {
+                                    senderName = snapshot.value.toString()
+                                    updateComponents()
+                                    pBar.setVisibility(View.GONE)
+                                }
+                                override fun onCancelled(error: DatabaseError) {
+                                    senderName = "user"
+                                    pBar.setVisibility(View.GONE)
+                                }
+                            })
+
+                            updateComponents()
+                            pBar.setVisibility(View.GONE)
+                        }
                     }
                     override fun onCancelled(error: DatabaseError) {
                         println(error)

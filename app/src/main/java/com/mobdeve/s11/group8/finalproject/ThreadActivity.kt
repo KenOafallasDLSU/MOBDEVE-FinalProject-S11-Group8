@@ -109,7 +109,22 @@ class ThreadActivity : AppCompatActivity(), OnItemClickListener {
     }
 
     private fun initData(){
-        this.threadIds = arrayOf("-Mhln9-lImhb5B0SiAI-", "-MhluSWS_6b8wKOGCsta", "-MhnGb6a7SP7en7oCjV2").toCollection(ArrayList<String>());
+        threadIds = ArrayList()
+        reference.child(userId).child(Collections.threads.name).addListenerForSingleValueEvent(object : ValueEventListener{
+            override fun onDataChange(snapshot: DataSnapshot) {
+                if (snapshot.hasChildren()) {
+                    for (data in snapshot.children){
+                        val data : String = snapshot.value.toString()
+                        threadIds.add(data)
+                    }
+                }
+            }
+            override fun onCancelled(error: DatabaseError) {
+                TODO("Not yet implemented")
+            }
+        })
+
+
         threadAdapter.submitList(threadIds)
     }
 
