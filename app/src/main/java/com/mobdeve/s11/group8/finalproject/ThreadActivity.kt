@@ -3,7 +3,9 @@ package com.mobdeve.s11.group8.finalproject
 import android.content.Intent
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
+import android.view.View
 import android.widget.EditText
+import android.widget.TextView
 import android.widget.Toast
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
@@ -13,11 +15,15 @@ import com.google.firebase.auth.FirebaseUser
 import com.google.firebase.database.*
 import java.util.*
 import kotlin.collections.ArrayList
+import kotlin.properties.Delegates
 
 class ThreadActivity : AppCompatActivity(), OnItemClickListener {
 
     private lateinit var threadAdapter: ThreadAdapter
     private lateinit var btnAdd: FloatingActionButton
+    private lateinit var tvThreadAvatarLetter: TextView
+    private lateinit var letter : String
+    private var color by Delegates.notNull<Int>()
     private lateinit var threadIds: ArrayList<String>
 
     private lateinit var profileId: String
@@ -87,6 +93,19 @@ class ThreadActivity : AppCompatActivity(), OnItemClickListener {
         reference = database.reference.child(Keys.USERS.name)
         user = FirebaseAuth.getInstance().currentUser!!
         userId = user.uid
+
+        reference.child(userId).addListenerForSingleValueEvent(object : ValueEventListener {
+            override fun onDataChange(snapshot: DataSnapshot) {
+                letter = snapshot.child(Collections.name.name).value.toString().get(0).toString()
+                color = resources.getIntArray(R.array.appcolors)[(snapshot.value.toString().length) % 5]
+                tvThreadAvatarLetter.setText(letter)
+                tvThreadAvatarLetter.background.setTint(color)
+
+            }
+            override fun onCancelled(error: DatabaseError) {
+                Toast.makeText(this@ThreadActivity, "Oh no! Something went wrong :(", Toast.LENGTH_SHORT).show()
+            }
+        })
     }
 
     private fun initData(){
@@ -100,6 +119,7 @@ class ThreadActivity : AppCompatActivity(), OnItemClickListener {
         threadAdapter = ThreadAdapter(this)
         rvThreads.adapter = threadAdapter
 
+        tvThreadAvatarLetter = findViewById(R.id.tv_thread_avatar_letter)
         etEmail = findViewById(R.id.et_thread_email)
         btnAdd = findViewById(R.id.btn_thread_add)
         btnAdd.setOnClickListener { v ->
