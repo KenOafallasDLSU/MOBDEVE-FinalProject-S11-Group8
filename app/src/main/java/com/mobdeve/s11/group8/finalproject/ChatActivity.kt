@@ -56,8 +56,9 @@ class ChatActivity : AppCompatActivity() {
         this.clChatFoot = findViewById(R.id.cl_chat_foot)
 
         //get thread extra
+
         this.currentThread = intent.getStringExtra(Keys.THREAD_ID_KEY.name).toString()
-        this.threadRef = rootRef.child("threads").child("tJd3M8PPsRNGCdGdH4iOONoqTDn1"/*this.currentThread*/)
+        this.threadRef = rootRef.child("threads").child(this.currentThread)
         this.chatsRef = this.threadRef.child("chats")
         Log.w("ThisThread", this.currentThread)
 
