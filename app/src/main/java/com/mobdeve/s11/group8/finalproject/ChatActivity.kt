@@ -12,6 +12,7 @@ import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.database.*
 import java.util.*
 import kotlin.collections.ArrayList
+import kotlin.collections.HashMap
 
 class ChatActivity : AppCompatActivity() {
     private lateinit var rvChat: RecyclerView
@@ -140,13 +141,17 @@ class ChatActivity : AppCompatActivity() {
                 }
                 val newChat = Chat(userId, partnerId, etChatInput.text.toString(), Calendar.getInstance())
                 val newChatId = threadRef.push().key.toString()
-                chatsRef.child(newChatId).child("senderId").setValue(newChat.senderId)
-                chatsRef.child(newChatId).child("receiverId").setValue(newChat.receiverId)
-                chatsRef.child(newChatId).child("body").setValue(newChat.body)
-                chatsRef.child(newChatId).child("dateTimeSent").setValue(newChat.dateTimeSent.timeInMillis)
+                val chatHashMap: HashMap<String, String> = HashMap()
+                chatHashMap.put("senderId", newChat.senderId)
+                chatHashMap.put("receiverId", newChat.receiverId)
+                chatHashMap.put("body", newChat.body)
+                chatHashMap.put("dateTimeSent", newChat.dateTimeSent.timeInMillis.toString())
+                chatsRef.child(newChatId).setValue(chatHashMap)
 
-                threadRef.child("lastChat").setValue(newChat.body)
-                threadRef.child("lastUpdated").setValue(newChat.getDateTimeString())
+                val threadHashMap: HashMap<String, String> = HashMap()
+                threadHashMap.put("lastChat", newChat.body)
+                threadHashMap.put("lastUpdated", newChat.getDateTimeString())
+                threadRef.updateChildren(threadHashMap as Map<String, Any>)
             } else {
                 Toast.makeText(applicationContext,"Enter a message",Toast.LENGTH_SHORT).show()
             }
@@ -166,7 +171,8 @@ class ChatActivity : AppCompatActivity() {
                 newChatRef.addListenerForSingleValueEvent(object : ValueEventListener {
                     override fun onDataChange(snapshot: DataSnapshot) {
                         val newCalendar = Calendar.getInstance()
-                        newCalendar.timeInMillis = snapshot.child("dateTimeSent").value as Long
+                        Log.w("Snap", snapshot.toString())
+                        newCalendar.timeInMillis = snapshot.child("dateTimeSent").value.toString().toLong()
                         chatList.add(
                             Chat(
                                 snapshot.child("senderId").value.toString(),
@@ -189,10 +195,7 @@ class ChatActivity : AppCompatActivity() {
             override fun onChildRemoved(snapshot: DataSnapshot) {}
             override fun onChildMoved(snapshot: DataSnapshot, previousChildName: String?) {}
 
-            override fun onCancelled(databaseError: DatabaseError) {
-                // Getting Post failed, log a message
-                Log.w("ChatActivity", "loadPost:onCancelled", databaseError.toException())
-            }
+            override fun onCancelled(databaseError: DatabaseError) {}
         }
 
         this.chatsRef.addChildEventListener(chatListener)
