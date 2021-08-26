@@ -38,22 +38,26 @@ class ThreadActivity : AppCompatActivity(), OnItemClickListener {
     }
 
     private fun searchEmails(email : String){
+
         this.reference.orderByChild(Collections.email.name).equalTo(email)
             .addListenerForSingleValueEvent(object : ValueEventListener {
                 override fun onDataChange(snapshot: DataSnapshot) {
 
-                    profileId = snapshot.key.toString()
+                    if (snapshot.hasChildren()) {
+                        for (data in snapshot.children){
+                            profileId = data.key.toString()
+                        }
 
-                    if (userId != profileId) {
-                        val thread = Thread(
-                            arrayOf(userId, profileId).toCollection(ArrayList<String>()),
-                            arrayOf(Chat(userId, profileId, "", Calendar.getInstance())
-                            ).toCollection(ArrayList<Chat>()),
-                        )
+                        if (userId != profileId) {
+                            val thread = Thread(
+                                arrayOf(userId, profileId).toCollection(ArrayList<String>()),
+                                arrayOf(Chat(userId, profileId, "", Calendar.getInstance()))
+                                .toCollection(ArrayList<Chat>()),
+                            )
 
-                        val newThreadKey = database.getReference(Collections.threads.name).push().key
-                        if (newThreadKey != null) {
-                            database.getReference(Collections.threads.name).child(newThreadKey)
+                            val newThreadKey = database.getReference(Collections.threads.name).push().key
+                            if (newThreadKey != null) {
+                                database.getReference(Collections.threads.name).child(newThreadKey)
                                 .setValue(thread).addOnCompleteListener { task ->
                                     if (task.isSuccessful) {
                                         val intent = Intent(this@ThreadActivity, ChatActivity::class.java)
@@ -63,13 +67,17 @@ class ThreadActivity : AppCompatActivity(), OnItemClickListener {
                                         Toast.makeText(this@ThreadActivity,"Oh no! Something went wrong :(", Toast.LENGTH_SHORT).show()
                                     }
                                 }
+                            }
+                        } else {
+                            Toast.makeText(this@ThreadActivity, "Hmm, you can't add yourself :/", Toast.LENGTH_SHORT).show()
                         }
                     } else {
-                        Toast.makeText(this@ThreadActivity, "Hmm, you can't add yourself :/", Toast.LENGTH_SHORT).show()
+                        Toast.makeText(this@ThreadActivity, "User does not exist :/", Toast.LENGTH_SHORT).show()
                     }
+
                 }
                 override fun onCancelled(error: DatabaseError) {
-                    Toast.makeText(this@ThreadActivity, "Cannot find user :(", Toast.LENGTH_SHORT).show()
+                    Toast.makeText(this@ThreadActivity, "Oh no! Something went wrong :(", Toast.LENGTH_SHORT).show()
                 }
             })
     }
