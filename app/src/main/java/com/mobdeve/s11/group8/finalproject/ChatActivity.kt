@@ -8,6 +8,7 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.database.*
 import java.util.*
 import kotlin.collections.ArrayList
@@ -30,13 +31,18 @@ class ChatActivity : AppCompatActivity() {
     private lateinit var ibChatSend: ImageButton
 
     // get current user from auth
-    private lateinit var user1: String
-    private lateinit var user2: String
+    private val user = FirebaseAuth.getInstance().currentUser!!
+    private val userId: String = user.uid
+    private lateinit var partnerId: String
+    private lateinit var partnerName: String
     private lateinit var currentThread: String
 
     private val rootRef = FirebaseDatabase.getInstance().reference
+    private val usersRef = rootRef.child("USERS")
     private lateinit var threadRef: DatabaseReference
     private lateinit var chatsRef: DatabaseReference
+
+
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -50,33 +56,48 @@ class ChatActivity : AppCompatActivity() {
         this.clChatFoot = findViewById(R.id.cl_chat_foot)
 
         //get thread extra
-        intent = getIntent()
         this.currentThread = intent.getStringExtra(Keys.THREAD_ID_KEY.name).toString()
-
-        //get user 1
-        this.user1 = "Ellen"
-        //get user 2
-        this.user2 = "Mica"
-
-        this.threadRef = rootRef.child("threads").child(this.currentThread)
+        this.threadRef = rootRef.child("threads").child("tJd3M8PPsRNGCdGdH4iOONoqTDn1"/*this.currentThread*/)
         this.chatsRef = this.threadRef.child("chats")
+        Log.w("ThisThread", this.currentThread)
 
-        this.initChatThreadDesign()
-        this.initRecyclerView()
-        this.initChatBack()
-        this.initChatCall()
-        this.initChatSend()
-        this.initListener()
+        //get chat partner
+        threadRef.addListenerForSingleValueEvent(object : ValueEventListener {
+            override fun onDataChange(snapshot: DataSnapshot) {
+                val user1: String = snapshot.child("users").child("0").value.toString()
+                val user2: String = snapshot.child("users").child("1").value.toString()
+                if (user1 == userId)
+                    partnerId = user2
+                else
+                    partnerId = user1
+                Log.w("ThisPartner", partnerId)
+                usersRef.child(partnerId).addListenerForSingleValueEvent(object : ValueEventListener {
+                    override fun onDataChange(userSnapshot: DataSnapshot) {
+                        partnerName = userSnapshot.child("name").value.toString()
+                        Log.w("ThisPartner", partnerName)
+
+                        initChatThreadDesign()
+                        initRecyclerView()
+                        initChatBack()
+                        initChatCall()
+                        initChatSend()
+                        initListener()
+                    }
+                    override fun onCancelled(error: DatabaseError) {}
+                })
+            }
+            override fun onCancelled(error: DatabaseError) {}
+        })
     }
 
     private fun initChatThreadDesign() {
-        val color1: Int = resources.getIntArray(R.array.appcolors)[user1.length%5]
-        val color2: Int = resources.getIntArray(R.array.appcolors)[user2.length%5]
-        this.clChatHead.background.setTint(color1)
-        this.ivChatAvatar.background.setTint(color2)
-        this.tvChatAvatarLetter.text = user2[0].toString()
-        this.tvChatName.text = user2
-        this.clChatFoot.background.setTint(color1)
+//        val color1: Int = resources.getIntArray(R.array.appcolors)[1]
+//        val color2: Int = resources.getIntArray(R.array.appcolors)[2]
+//        this.clChatHead.background.setTint(color1)
+//        this.ivChatAvatar.background.setTint(color2)
+//        this.clChatFoot.background.setTint(color1)
+        this.tvChatAvatarLetter.text = partnerName[0].toString()
+        this.tvChatName.text = partnerName
     }
 
     private fun initRecyclerView() {
@@ -109,7 +130,7 @@ class ChatActivity : AppCompatActivity() {
         this.ibChatSend = findViewById(R.id.ib_chat_send)
         this.ibChatSend.setOnClickListener {
             if(etChatInput.text.toString() != "") {
-                val newChat = Chat(user1, user2, etChatInput.text.toString(), Calendar.getInstance())
+                val newChat = Chat(userId, partnerId, etChatInput.text.toString(), Calendar.getInstance())
                 val newChatId = threadRef.push().key.toString()
                 chatsRef.child(newChatId).child("senderId").setValue(newChat.senderId)
                 chatsRef.child(newChatId).child("receiverId").setValue(newChat.receiverId)
@@ -134,19 +155,19 @@ class ChatActivity : AppCompatActivity() {
                 newChatRef.addListenerForSingleValueEvent(object : ValueEventListener {
                     override fun onDataChange(snapshot: DataSnapshot) {
                         val newCalendar = Calendar.getInstance()
-                        newCalendar.timeInMillis = snapshot.child("dateTimeSent").getValue() as Long
+                        newCalendar.timeInMillis = snapshot.child("dateTimeSent").value as Long
                         chatList.add(
                             Chat(
-                                snapshot.child("senderId").getValue().toString(),
-                                snapshot.child("receiverId").getValue().toString(),
-                                snapshot.child("body").getValue().toString(),
+                                snapshot.child("senderId").value.toString(),
+                                snapshot.child("receiverId").value.toString(),
+                                snapshot.child("body").value.toString(),
                                 newCalendar
                             )
                         )
                         chatAdapter.notifyItemChanged(chatList.lastIndex)
-                        chatAdapter.notifyItemRangeChanged(chatList.lastIndex, chatAdapter.getItemCount())
+                        chatAdapter.notifyItemRangeChanged(chatList.lastIndex, chatAdapter.itemCount)
 
-                        rvChat.smoothScrollToPosition(chatAdapter.getItemCount()- 1)
+                        rvChat.smoothScrollToPosition(chatAdapter.itemCount - 1)
                     }
 
                     override fun onCancelled(error: DatabaseError) {}

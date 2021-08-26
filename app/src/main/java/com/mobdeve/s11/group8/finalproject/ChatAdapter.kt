@@ -41,7 +41,7 @@ class ChatAdapter(private var chatList: ArrayList<Chat>) :
             chatHolder.setItemChatDate(this.chatList.get(position).getTimeString())
 
         //Chat bubble formatting
-        chatHolder.setItemChatBubbleColor(this.chatList.get(position).senderId)
+        //chatHolder.setItemChatBubbleColor(this.chatList.get(position).senderId)
     }
 
     override fun getItemCount(): Int {
