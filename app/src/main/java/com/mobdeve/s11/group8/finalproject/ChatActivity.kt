@@ -116,6 +116,9 @@ class ChatActivity : AppCompatActivity() {
     private fun initChatBack() {
         this.ibChatBack = findViewById(R.id.ib_chat_back)
         this.ibChatBack.setOnClickListener{
+            if(chatAdapter.itemCount <= 0) {
+                threadRef.removeValue()
+            }
             finish()
         }
     }
@@ -131,6 +134,10 @@ class ChatActivity : AppCompatActivity() {
         this.ibChatSend = findViewById(R.id.ib_chat_send)
         this.ibChatSend.setOnClickListener {
             if(etChatInput.text.toString() != "") {
+                if(chatAdapter.itemCount <= 0) {
+                    usersRef.child(userId).child("threads").child(currentThread).setValue(currentThread)
+                    usersRef.child(partnerId).child("threads").child(currentThread).setValue(currentThread)
+                }
                 val newChat = Chat(userId, partnerId, etChatInput.text.toString(), Calendar.getInstance())
                 val newChatId = threadRef.push().key.toString()
                 chatsRef.child(newChatId).child("senderId").setValue(newChat.senderId)
