@@ -56,9 +56,7 @@ class ThreadActivity : AppCompatActivity(), OnItemClickListener {
 
                         if (userId != profileId) {
                             val thread = Thread(
-                                arrayOf(userId, profileId).toCollection(ArrayList<String>()),
-                                arrayOf(Chat(userId, profileId, "", Calendar.getInstance()))
-                                .toCollection(ArrayList<Chat>()),
+                                arrayOf(userId, profileId).toCollection(ArrayList<String>())
                             )
 
                             val newThreadKey = database.getReference(Collections.threads.name).push().key
@@ -67,7 +65,7 @@ class ThreadActivity : AppCompatActivity(), OnItemClickListener {
                                 .setValue(thread).addOnCompleteListener { task ->
                                     if (task.isSuccessful) {
                                         val intent = Intent(this@ThreadActivity, ChatActivity::class.java)
-                                        intent.putExtra(Keys.THREAD_ADD_NEW_KEY.name, newThreadKey.toString())
+                                        intent.putExtra(Keys.THREAD_ID_KEY.name, newThreadKey.toString())
                                         startActivity(intent)
                                     } else {
                                         Toast.makeText(this@ThreadActivity,"Oh no! Something went wrong :(", Toast.LENGTH_SHORT).show()
