@@ -137,6 +137,9 @@ class ChatActivity : AppCompatActivity() {
                 chatsRef.child(newChatId).child("receiverId").setValue(newChat.receiverId)
                 chatsRef.child(newChatId).child("body").setValue(newChat.body)
                 chatsRef.child(newChatId).child("dateTimeSent").setValue(newChat.dateTimeSent.timeInMillis)
+
+                threadRef.child("lastChat").setValue(newChat.body)
+                threadRef.child("lastUpdated").setValue(newChat.getDateTimeString())
             } else {
                 Toast.makeText(applicationContext,"Enter a message",Toast.LENGTH_SHORT).show()
             }
