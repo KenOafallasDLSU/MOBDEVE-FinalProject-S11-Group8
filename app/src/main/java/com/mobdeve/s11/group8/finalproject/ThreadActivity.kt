@@ -24,6 +24,7 @@ class ThreadActivity : AppCompatActivity(), OnItemClickListener {
     private lateinit var btnAdd: FloatingActionButton
     private lateinit var tvThreadAvatarLetter: TextView
     private lateinit var pBar : ProgressBar
+    private lateinit var tvNoChats : TextView
 
     private lateinit var profileId: String
     private lateinit var etEmail: EditText
@@ -123,6 +124,9 @@ class ThreadActivity : AppCompatActivity(), OnItemClickListener {
                 var list : ArrayList<String> = ArrayList()
                 for (data in snapshot.children) list.add(data.key.toString())
                 threadIds = list.toCollection(ArrayList<String>())
+                if (threadIds.size == 0) { tvNoChats.visibility = View.VISIBLE }
+                else { tvNoChats.visibility = View.GONE }
+
                 threadAdapter.submitList(threadIds)
                 threadAdapter.notifyDataSetChanged()
             }
@@ -140,6 +144,7 @@ class ThreadActivity : AppCompatActivity(), OnItemClickListener {
         threadAdapter = ThreadAdapter(this)
         rvThreads.adapter = threadAdapter
 
+        tvNoChats = findViewById(R.id.tv_threads_no_chats)
         pBar = findViewById(R.id.pb_thread)
         tvThreadAvatarLetter = findViewById(R.id.tv_thread_avatar_letter)
         etEmail = findViewById(R.id.et_thread_email)
