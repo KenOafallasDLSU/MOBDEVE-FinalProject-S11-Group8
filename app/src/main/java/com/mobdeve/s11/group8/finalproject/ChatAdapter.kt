@@ -3,11 +3,15 @@ package com.mobdeve.s11.group8.finalproject
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
+import com.google.firebase.auth.FirebaseAuth
 import java.util.*
 import kotlin.collections.ArrayList
 
 class ChatAdapter(private var chatList: ArrayList<Chat>) :
     RecyclerView.Adapter<RecyclerView.ViewHolder>() {
+
+    private val user = FirebaseAuth.getInstance().currentUser!!
+    private val userId: String = user.uid
 
     companion object {
         private const val LEFT_LAYOUT: Int = 0
@@ -49,9 +53,9 @@ class ChatAdapter(private var chatList: ArrayList<Chat>) :
     }
 
     override fun getItemViewType(position: Int): Int {
-        if ("Mica" == this.chatList.get(position).senderId)
-            return LEFT_LAYOUT
-        else
+        if (this.userId == this.chatList.get(position).senderId)
             return RIGHT_LAYOUT
+        else
+            return LEFT_LAYOUT
     }
 }
