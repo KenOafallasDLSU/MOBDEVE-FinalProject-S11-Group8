@@ -99,7 +99,6 @@ class ThreadActivity : AppCompatActivity(), OnItemClickListener {
                 color = resources.getIntArray(R.array.appcolors)[(snapshot.value.toString().length) % 5]
                 tvThreadAvatarLetter.setText(letter)
                 tvThreadAvatarLetter.background.setTint(color)
-
             }
             override fun onCancelled(error: DatabaseError) {
                 Toast.makeText(this@ThreadActivity, "Oh no! Something went wrong :(", Toast.LENGTH_SHORT).show()
@@ -108,17 +107,18 @@ class ThreadActivity : AppCompatActivity(), OnItemClickListener {
     }
 
     private fun initData(){
+
         this.reference.child(userId).child(Collections.threads.name).addListenerForSingleValueEvent(object : ValueEventListener{
             override fun onDataChange(snapshot: DataSnapshot) {
                 var list : ArrayList<String> = ArrayList()
-                list.clear()
-                for (data in snapshot.children)
-                    list.add(data.key.toString())
+                for (data in snapshot.children) list.add(data.key.toString())
                 threadIds = list.toCollection(ArrayList<String>())
                 threadAdapter.submitList(threadIds)
+                threadAdapter.notifyDataSetChanged()
             }
             override fun onCancelled(error: DatabaseError) {}
         })
+
     }
 
     private fun initRecyclerView(){
@@ -143,7 +143,6 @@ class ThreadActivity : AppCompatActivity(), OnItemClickListener {
     override fun onItemClick(position: Int) {
         val intent = Intent(this, ChatActivity::class.java)
         intent.putExtra(Keys.THREAD_ID_KEY.name, threadIds[position])
-        Toast.makeText(this, threadIds[position], Toast.LENGTH_SHORT).show()
         startActivity(intent);
     }
 
