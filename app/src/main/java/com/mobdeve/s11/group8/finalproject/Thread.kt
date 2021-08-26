@@ -4,6 +4,7 @@ import kotlin.collections.ArrayList
 class Thread {
     var users : ArrayList<String>
     var chats: ArrayList<Chat>? = null
+
     constructor(users: ArrayList<String>, chats: ArrayList<Chat>) {
         this.users = users
         this.chats = chats

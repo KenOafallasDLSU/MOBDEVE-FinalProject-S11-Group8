@@ -5,6 +5,7 @@ import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.view.View
 import android.widget.EditText
+import android.widget.ProgressBar
 import android.widget.TextView
 import android.widget.Toast
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -22,12 +23,14 @@ class ThreadActivity : AppCompatActivity(), OnItemClickListener {
     private lateinit var threadAdapter: ThreadAdapter
     private lateinit var btnAdd: FloatingActionButton
     private lateinit var tvThreadAvatarLetter: TextView
-    private lateinit var letter : String
-    private var color by Delegates.notNull<Int>()
-    private lateinit var threadIds: ArrayList<String>
+    private lateinit var pBar : ProgressBar
 
     private lateinit var profileId: String
     private lateinit var etEmail: EditText
+    private lateinit var letter : String
+    private var color by Delegates.notNull<Int>()
+
+    private lateinit var threadIds: ArrayList<String>
 
     private lateinit var database: FirebaseDatabase
     private lateinit var reference: DatabaseReference
@@ -45,17 +48,14 @@ class ThreadActivity : AppCompatActivity(), OnItemClickListener {
 
     private fun searchEmails(email : String){
 
+        pBar.visibility = View.VISIBLE
         this.reference.orderByChild(Collections.email.name).equalTo(email)
             .addListenerForSingleValueEvent(object : ValueEventListener {
-
                 override fun onDataChange(snapshot: DataSnapshot) {
                     if (snapshot.hasChildren()) {
-
-                        for (data in snapshot.children)
-                            profileId = data.key.toString()
+                        for (data in snapshot.children) profileId = data.key.toString()
 
                         if (userId != profileId) {
-
                             val thread = Thread(arrayOf(userId, profileId).toCollection(ArrayList<String>()))
                             val newThreadKey = database.getReference(Collections.threads.name).push().key
 
@@ -63,25 +63,30 @@ class ThreadActivity : AppCompatActivity(), OnItemClickListener {
                                 database.getReference(Collections.threads.name).child(newThreadKey)
                                 .setValue(thread).addOnCompleteListener { task ->
                                     if (task.isSuccessful) {
+                                        pBar.visibility = View.GONE
                                         val intent = Intent(this@ThreadActivity, ChatActivity::class.java)
                                         intent.putExtra(Keys.THREAD_ID_KEY.name, newThreadKey.toString())
                                         startActivity(intent)
                                     } else {
+                                        pBar.visibility = View.GONE
                                         Toast.makeText(this@ThreadActivity,"Oh no! Something went wrong :(", Toast.LENGTH_SHORT).show()
                                     }
                                 }
                             }
 
                         } else {
+                            pBar.visibility = View.GONE
                             Toast.makeText(this@ThreadActivity, "Hmm, you can't add yourself :/", Toast.LENGTH_SHORT).show()
                         }
 
                     } else {
+                        pBar.visibility = View.GONE
                         Toast.makeText(this@ThreadActivity, "User does not exist :/", Toast.LENGTH_SHORT).show()
                     }
 
                 }
                 override fun onCancelled(error: DatabaseError) {
+                    pBar.visibility = View.GONE
                     Toast.makeText(this@ThreadActivity, "Oh no! Something went wrong :(", Toast.LENGTH_SHORT).show()
                 }
             })
@@ -93,14 +98,17 @@ class ThreadActivity : AppCompatActivity(), OnItemClickListener {
         user = FirebaseAuth.getInstance().currentUser!!
         userId = user.uid
 
+        pBar.visibility = View.VISIBLE
         this.reference.child(userId).addListenerForSingleValueEvent(object : ValueEventListener {
             override fun onDataChange(snapshot: DataSnapshot) {
+                pBar.visibility = View.GONE
                 letter = snapshot.child(Collections.name.name).value.toString().get(0).toString()
                 color = resources.getIntArray(R.array.appcolors)[(snapshot.value.toString().length) % 5]
                 tvThreadAvatarLetter.setText(letter)
                 tvThreadAvatarLetter.background.setTint(color)
             }
             override fun onCancelled(error: DatabaseError) {
+                pBar.visibility = View.GONE
                 Toast.makeText(this@ThreadActivity, "Oh no! Something went wrong :(", Toast.LENGTH_SHORT).show()
             }
         })
@@ -108,15 +116,20 @@ class ThreadActivity : AppCompatActivity(), OnItemClickListener {
 
     private fun initData(){
 
+        pBar.visibility = View.VISIBLE
         this.reference.child(userId).child(Collections.threads.name).addListenerForSingleValueEvent(object : ValueEventListener{
             override fun onDataChange(snapshot: DataSnapshot) {
+                pBar.visibility = View.GONE
                 var list : ArrayList<String> = ArrayList()
                 for (data in snapshot.children) list.add(data.key.toString())
                 threadIds = list.toCollection(ArrayList<String>())
                 threadAdapter.submitList(threadIds)
                 threadAdapter.notifyDataSetChanged()
             }
-            override fun onCancelled(error: DatabaseError) {}
+            override fun onCancelled(error: DatabaseError) {
+                pBar.visibility = View.GONE
+                Toast.makeText(this@ThreadActivity, "Error loading data.", Toast.LENGTH_SHORT).show()
+            }
         })
 
     }
@@ -127,6 +140,7 @@ class ThreadActivity : AppCompatActivity(), OnItemClickListener {
         threadAdapter = ThreadAdapter(this)
         rvThreads.adapter = threadAdapter
 
+        pBar = findViewById(R.id.pb_thread)
         tvThreadAvatarLetter = findViewById(R.id.tv_thread_avatar_letter)
         etEmail = findViewById(R.id.et_thread_email)
         btnAdd = findViewById(R.id.btn_thread_add)

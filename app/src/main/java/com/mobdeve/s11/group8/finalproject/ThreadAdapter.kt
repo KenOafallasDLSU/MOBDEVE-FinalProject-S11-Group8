@@ -80,7 +80,7 @@ class ThreadAdapter(var listener: OnItemClickListener) : RecyclerView.Adapter<Re
             }
 
             // retrieve thread from database
-            pBar.setVisibility(View.VISIBLE)
+            pBar.visibility = View.VISIBLE
             database.reference.child(Collections.threads.name).child(threadId)
                 .addListenerForSingleValueEvent(object : ValueEventListener {
                     override fun onDataChange(snapshot: DataSnapshot) {
@@ -95,31 +95,32 @@ class ThreadAdapter(var listener: OnItemClickListener) : RecyclerView.Adapter<Re
                             // retrieve other user's name from database
                             reference.child(otherId!!).child(Collections.name.name).addListenerForSingleValueEvent(object : ValueEventListener {
                                 override fun onDataChange(snapshot: DataSnapshot) {
+                                    pBar.visibility = View.GONE
                                     senderName = snapshot.value.toString()
                                     updateComponents()
-                                    pBar.setVisibility(View.GONE)
                                 }
                                 override fun onCancelled(error: DatabaseError) {
+                                    pBar.visibility = View.GONE
                                     senderName = "user"
-                                    pBar.setVisibility(View.GONE)
                                 }
                             })
 
+                            pBar.visibility = View.GONE
                             updateComponents()
-                            pBar.setVisibility(View.GONE)
                         }
                     }
                     override fun onCancelled(error: DatabaseError) {
+                        pBar.visibility = View.GONE
                         println(error)
                     }
                 })
         }
 
         fun updateComponents(){
-            tvDisplayName.setText(senderName)
-            tvAvatarLetter.setText(senderName?.get(0)?.toString())
-            tvTextMessage.setText(lastChat)
-            tvDate.setText(lastUpdated)
+            tvDisplayName.text = senderName
+            tvAvatarLetter.text = senderName?.get(0)?.toString()
+            tvTextMessage.text = lastChat
+            tvDate.text = lastUpdated
             val color: Int = itemView.resources.getIntArray(R.array.appcolors)[(senderName?.length ?: 0) % 5]
             ivAvatarBackground.background.setTint(color)
         }
