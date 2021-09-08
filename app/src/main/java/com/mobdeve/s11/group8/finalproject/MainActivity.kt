@@ -24,6 +24,10 @@ class MainActivity : AppCompatActivity() {
 
         this.initFirebase()
         this.initComponents()
+
+        if (this.mAuth.currentUser != null) {
+            startActivity(Intent(this, ThreadActivity::class.java))
+        }
     }
 
     private fun initFirebase() {
