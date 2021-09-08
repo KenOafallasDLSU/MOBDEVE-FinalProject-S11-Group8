@@ -93,11 +93,13 @@ class ChatActivity : AppCompatActivity() {
     }
 
     private fun initChatThreadDesign() {
+        val color: Int = resources.getIntArray(R.array.appcolors)[(partnerName?.length ?: 0) % 5]
 //        val color1: Int = resources.getIntArray(R.array.appcolors)[1]
 //        val color2: Int = resources.getIntArray(R.array.appcolors)[2]
-//        this.clChatHead.background.setTint(color1)
-//        this.ivChatAvatar.background.setTint(color2)
-//        this.clChatFoot.background.setTint(color1)
+//        this.clChatHead.background.setTint(color)
+        this.tvChatName.setTextColor(color)
+        this.ivChatAvatar.background.setTint(color)
+        this.clChatFoot.background.setTint(color)
         this.tvChatAvatarLetter.text = partnerName[0].toString()
         this.tvChatName.text = partnerName
     }

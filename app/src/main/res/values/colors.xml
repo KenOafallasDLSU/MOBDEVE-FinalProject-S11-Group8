@@ -10,18 +10,25 @@
 
     <color name="gray">#FF343434</color>
     <color name="red">#FFC50000</color>
-    <color name="green">#FF00CE2D</color>
     <color name="blue_200">#FFD4F0F1</color>
     <color name="blue_500">#FF8FC9CA</color>
     <color name="green_200">#FFCCE2CB</color>
     <color name="green_500">#FFB7CFB7</color>
     <color name="green_700">#FF97C1A9</color>
 
+    <color name="dark_gray">#6D6D6D</color>
+    <color name="pink">#BD94A4</color>
+    <color name="yellow">#BCCEE2</color>
+    <color name="blue">#FEDAAA</color>
+    <color name="green">#FBBB97</color>
+    <color name="purple">#FAA6A0</color>
+
+
     <integer-array name="appcolors">
-        <item>@color/blue_200</item>
-        <item>@color/blue_500</item>
-        <item>@color/green_200</item>
-        <item>@color/green_500</item>
-        <item>@color/green_700</item>
+        <item>@color/pink</item>
+        <item>@color/yellow</item>
+        <item>@color/blue</item>
+        <item>@color/green</item>
+        <item>@color/purple</item>
     </integer-array>
 </resources>
