@@ -59,6 +59,7 @@ class ProfileActivity : AppCompatActivity() {
                 FirebaseAuth.getInstance().signOut();
                 Toast.makeText(this, "Successfully logged out user.", Toast.LENGTH_SHORT).show()
                 val intent = Intent(this, MainActivity::class.java)
+                finish();
                 startActivity(intent)
             })
             builder.setNegativeButton("No", DialogInterface.OnClickListener{dialog, id ->
