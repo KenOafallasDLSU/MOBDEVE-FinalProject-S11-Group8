@@ -4,10 +4,7 @@ import android.content.Intent
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.view.View
-import android.widget.EditText
-import android.widget.ProgressBar
-import android.widget.TextView
-import android.widget.Toast
+import android.widget.*
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.google.android.material.floatingactionbutton.FloatingActionButton
@@ -25,6 +22,8 @@ class ThreadActivity : AppCompatActivity(), OnItemClickListener {
     private lateinit var tvThreadAvatarLetter: TextView
     private lateinit var pBar : ProgressBar
     private lateinit var tvNoChats : TextView
+    private lateinit var tvTitle : TextView
+    private lateinit var tvTitleIcon : ImageView
 
     private lateinit var profileId: String
     private lateinit var etEmail: EditText
@@ -107,6 +106,8 @@ class ThreadActivity : AppCompatActivity(), OnItemClickListener {
                 color = resources.getIntArray(R.array.appcolors)[(snapshot.value.toString().length) % 5]
                 tvThreadAvatarLetter.setText(letter)
                 tvThreadAvatarLetter.background.setTint(color)
+                tvTitle.setTextColor(color)
+                tvTitleIcon.setColorFilter(color)
             }
             override fun onCancelled(error: DatabaseError) {
                 pBar.visibility = View.GONE
@@ -144,9 +145,15 @@ class ThreadActivity : AppCompatActivity(), OnItemClickListener {
         threadAdapter = ThreadAdapter(this)
         rvThreads.adapter = threadAdapter
 
+        tvTitle = findViewById(R.id.tv_thread_app_name)
+        tvTitleIcon = findViewById(R.id.iv_thread_app_icon)
         tvNoChats = findViewById(R.id.tv_threads_no_chats)
         pBar = findViewById(R.id.pb_thread)
         tvThreadAvatarLetter = findViewById(R.id.tv_thread_avatar_letter)
+        tvThreadAvatarLetter.setOnClickListener { v ->
+            val intent = Intent(this, ProfileActivity::class.java)
+            startActivity(intent)
+        }
         etEmail = findViewById(R.id.et_thread_email)
         btnAdd = findViewById(R.id.btn_thread_add)
         btnAdd.setOnClickListener { v ->
