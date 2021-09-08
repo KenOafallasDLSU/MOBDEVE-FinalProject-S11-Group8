@@ -10,24 +10,42 @@
     <androidx.constraintlayout.widget.ConstraintLayout
         android:id="@+id/cl_chat_head"
         android:layout_width="0dp"
-        android:layout_height="0dp"
-        android:background="#00BCD4"
-        app:layout_constraintBottom_toTopOf="@+id/gl_chat_head"
+        android:layout_height="wrap_content"
+        android:background="@color/white"
+        android:elevation="5dp"
+        android:paddingStart="10dp"
+        android:paddingTop="10dp"
+        android:paddingEnd="10dp"
+        android:paddingBottom="10dp"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="1.0"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="1.0">
+        app:layout_constraintTop_toTopOf="parent">
+
+        <com.google.android.material.floatingactionbutton.FloatingActionButton
+            android:id="@+id/ib_chat_call"
+            android:layout_width="64dp"
+            android:layout_height="wrap_content"
+            android:layout_marginEnd="16dp"
+            android:adjustViewBounds="true"
+            android:clickable="true"
+            app:backgroundTint="#FFFFFF"
+            app:fabCustomSize="40dp"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintDimensionRatio="H,1:1"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            app:srcCompat="@drawable/videocall"
+            tools:ignore="SpeakableTextPresentCheck" />
 
         <ImageView
             android:id="@+id/iv_chat_avatar"
-            android:layout_width="72dp"
-            android:layout_height="72dp"
+            android:layout_width="52dp"
+            android:layout_height="52dp"
             android:background="@drawable/thread_avatar_circle"
             android:backgroundTint="@color/green_700"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintHorizontal_bias="0.0"
+            app:layout_constraintHorizontal_bias="0.036"
             app:layout_constraintStart_toEndOf="@+id/ib_chat_back"
             app:layout_constraintTop_toTopOf="parent" />
 
@@ -38,7 +56,7 @@
             android:fontFamily="@font/montserrat_bold"
             android:gravity="center"
             android:textColor="@color/white"
-            android:textSize="34sp"
+            android:textSize="28sp"
             app:layout_constraintBottom_toBottomOf="@id/iv_chat_avatar"
             app:layout_constraintEnd_toEndOf="@+id/iv_chat_avatar"
             app:layout_constraintStart_toStartOf="@id/iv_chat_avatar"
@@ -46,32 +64,24 @@
 
         <ImageButton
             android:id="@+id/ib_chat_back"
-            android:layout_width="64dp"
-            android:layout_height="64dp"
+            android:layout_width="52dp"
+            android:layout_height="54dp"
+            android:layout_marginStart="10dp"
             android:background="#00FFFFFF"
             android:scaleType="fitCenter"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent"
-            app:srcCompat="@drawable/backarrow" />
-
-        <ImageButton
-            android:id="@+id/ib_chat_call"
-            android:layout_width="64dp"
-            android:layout_height="64dp"
-            android:layout_marginEnd="16dp"
-            android:background="#00FFFFFF"
-            android:scaleType="fitCenter"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintTop_toTopOf="parent"
-            app:srcCompat="@drawable/videocall" />
+            app:srcCompat="@drawable/backarrow"
+            app:tint="@color/dark_gray"
+            tools:ignore="SpeakableTextPresentCheck" />
 
         <TextView
             android:id="@+id/tv_chat_name"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginStart="10dp"
+            android:fontFamily="@font/montserrat"
             android:textColor="@color/white"
             android:textSize="24sp"
             app:layout_constraintBottom_toBottomOf="parent"
@@ -85,44 +95,47 @@
     <androidx.constraintlayout.widget.ConstraintLayout
         android:id="@+id/cl_chat_foot"
         android:layout_width="0dp"
-        android:layout_height="0dp"
-        android:background="#00BCD4"
+        android:layout_height="80dp"
+        android:background="@color/green_700"
+        android:padding="15dp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="@+id/gl_chat_foot" >
+        app:layout_constraintStart_toStartOf="parent">
 
-        <ImageButton
+        <com.google.android.material.floatingactionbutton.FloatingActionButton
             android:id="@+id/ib_chat_send"
-            android:layout_width="70dp"
-            android:layout_height="74dp"
-            android:backgroundTint="#00FFFFFF"
-            android:foregroundTintMode="src_atop"
-            android:scaleType="fitCenter"
+            android:layout_width="48dp"
+            android:layout_height="wrap_content"
+            android:baselineAlignBottom="false"
+            android:clickable="true"
+            android:minHeight="48dp"
+            android:scaleType="fitXY"
+            app:backgroundTint="#FFFFFF"
+            app:elevation="0dp"
+            app:fabCustomSize="44dp"
             app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintDimensionRatio="H,1:1"
             app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintHorizontal_bias="1.0"
-            app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent"
-            app:srcCompat="@drawable/send" />
+            app:srcCompat="@drawable/send"
+            app:useCompatPadding="false"
+            tools:ignore="SpeakableTextPresentCheck" />
 
         <EditText
             android:id="@+id/et_chat_input"
             android:layout_width="0dp"
             android:layout_height="0dp"
-            android:layout_marginStart="20dp"
-            android:layout_marginTop="30dp"
-            android:layout_marginBottom="30dp"
+            android:layout_marginEnd="10dp"
             android:background="@drawable/rounded_chat_background"
             android:ems="10"
             android:inputType="textMultiLine|textPersonName"
             android:paddingStart="15dp"
             android:paddingEnd="15dp"
-            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintBottom_toBottomOf="@+id/ib_chat_send"
             app:layout_constraintEnd_toStartOf="@+id/ib_chat_send"
-            app:layout_constraintHorizontal_bias="0.0"
+            app:layout_constraintHorizontal_bias="0.5"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent" />
+            app:layout_constraintTop_toTopOf="@+id/ib_chat_send" />
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 
@@ -142,21 +155,14 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:orientation="horizontal"
-        app:layout_constraintGuide_begin="100dp" />
-
-    <androidx.constraintlayout.widget.Guideline
-        android:id="@+id/gl_chat_foot"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:orientation="horizontal"
-        app:layout_constraintGuide_end="100dp" />
+        app:layout_constraintGuide_percent="0.10123119" />
 
     <androidx.constraintlayout.widget.Guideline
         android:id="@+id/gl_chat_left"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:orientation="vertical"
-        app:layout_constraintGuide_begin="20dp" />
+        app:layout_constraintGuide_begin="16dp" />
 
     <androidx.constraintlayout.widget.Guideline
         android:id="@+id/gl_chat_right"
