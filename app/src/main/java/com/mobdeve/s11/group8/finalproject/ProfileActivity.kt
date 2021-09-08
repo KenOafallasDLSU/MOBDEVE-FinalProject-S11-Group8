@@ -1,9 +1,12 @@
 package com.mobdeve.s11.group8.finalproject
 
+import android.content.DialogInterface
+import android.content.Intent
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.view.View
 import android.widget.*
+import androidx.appcompat.app.AlertDialog
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.FirebaseUser
 import com.google.firebase.database.*
@@ -32,6 +35,37 @@ class ProfileActivity : AppCompatActivity() {
 
         initRecyclerView()
         initFirebase()
+        initListeners()
+    }
+
+    private fun initListeners() {
+        btnEdit.setOnClickListener{ v ->
+            val editName = etName.text.toString().trim()
+            if(editName.isEmpty()) {
+                this.etName.error = "Required field"
+                this.etName.requestFocus()
+            } else {
+                this.reference.child(userId).child(Collections.name.name).setValue(editName)
+                Toast.makeText(this, "Succesfully updated user.", Toast.LENGTH_SHORT).show()
+                finish();
+                startActivity(intent);
+            }
+        }
+        btnLogout.setOnClickListener{ v ->
+            var builder = AlertDialog.Builder(this)
+            builder.setTitle("Log Out")
+            builder.setMessage("Are you sure you want to log out?")
+            builder.setPositiveButton("Yes", DialogInterface.OnClickListener{dialog, id ->
+                FirebaseAuth.getInstance().signOut();
+                Toast.makeText(this, "Successfully logged out user.", Toast.LENGTH_SHORT).show()
+                val intent = Intent(this, MainActivity::class.java)
+                startActivity(intent)
+            })
+            builder.setNegativeButton("No", DialogInterface.OnClickListener{dialog, id ->
+                dialog.cancel()
+            })
+            builder.create().show()
+        }
     }
 
     private fun initFirebase() {
@@ -66,8 +100,8 @@ class ProfileActivity : AppCompatActivity() {
         tvName = findViewById(R.id.tv_profile_name)
         tvEmail = findViewById(R.id.tv_profile_email)
         etName = findViewById(R.id.et_profile_name)
+        pBar = findViewById(R.id.pb_profile)
         btnEdit = findViewById(R.id.btn_profile_edit)
         btnLogout = findViewById(R.id.btn_profile_logout)
-        pBar = findViewById(R.id.pb_profile)
     }
 }
