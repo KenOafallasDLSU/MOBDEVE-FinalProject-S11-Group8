@@ -38,9 +38,7 @@ class VideoActivity : AppCompatActivity() {
         }
 
         this.ibEnd.setOnClickListener {
-            val chatIntent = Intent(this, ChatActivity::class.java)
-            startActivity(chatIntent)
-//            finish()
+            finish()
         }
 
         this.ibMic.setOnClickListener {
