@@ -68,13 +68,13 @@
         app:backgroundTint="@color/accept"
         app:fabCustomSize="60dp"
         app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toStartOf="@+id/ib_receiving_decline"
+        app:layout_constraintEnd_toStartOf="@+id/ib_receiving_reject"
         app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintStart_toStartOf="parent"
         app:srcCompat="@drawable/accept" />
 
     <com.google.android.material.floatingactionbutton.FloatingActionButton
-        android:id="@+id/ib_receiving_decline"
+        android:id="@+id/ib_receiving_reject"
         android:layout_width="60dp"
         android:layout_height="60dp"
         android:layout_marginEnd="50dp"
