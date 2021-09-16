@@ -100,8 +100,10 @@ class ChatActivity : AppCompatActivity() {
             override fun onCancelled(error: DatabaseError) {}
 
             override fun onDataChange(snapshot: DataSnapshot) {
-                val receivingIntent = Intent(this@ChatActivity, ReceivingActivity::class.java)
-                startActivity(receivingIntent)
+                if (snapshot.value != null) {
+                    val receivingIntent = Intent(this@ChatActivity, ReceivingActivity::class.java)
+                    startActivity(receivingIntent)
+                }
             }
         })
     }

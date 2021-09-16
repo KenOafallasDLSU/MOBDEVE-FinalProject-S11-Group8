@@ -36,7 +36,7 @@ class ThreadActivity : AppCompatActivity(), OnItemClickListener {
     private lateinit var reference: DatabaseReference
     private lateinit var user: FirebaseUser
     private lateinit var userId: String
-    private val userCallRef = FirebaseDatabase.getInstance().reference.child("USERS").child(userId).child("callHandler")
+    private lateinit var userCallRef: DatabaseReference
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -53,8 +53,10 @@ class ThreadActivity : AppCompatActivity(), OnItemClickListener {
             override fun onCancelled(error: DatabaseError) {}
 
             override fun onDataChange(snapshot: DataSnapshot) {
-                val receivingIntent = Intent(this@ThreadActivity, ReceivingActivity::class.java)
-                startActivity(receivingIntent)
+                if (snapshot.value != null) {
+                    val receivingIntent = Intent(this@ThreadActivity, ReceivingActivity::class.java)
+                    startActivity(receivingIntent)
+                }
             }
         })
     }
@@ -110,6 +112,7 @@ class ThreadActivity : AppCompatActivity(), OnItemClickListener {
         reference = database.reference.child(Keys.USERS.name)
         user = FirebaseAuth.getInstance().currentUser!!
         userId = user.uid
+        userCallRef = FirebaseDatabase.getInstance().reference.child("USERS").child(userId).child("callHandler")
 
         pBar.visibility = View.VISIBLE
         this.reference.child(userId).addListenerForSingleValueEvent(object : ValueEventListener {

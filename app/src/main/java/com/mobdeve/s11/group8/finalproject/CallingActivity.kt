@@ -39,14 +39,6 @@ class CallingActivity : AppCompatActivity() {
         this.ibEnd.setOnClickListener {
             finish()
         }
-
-        // for VideoActivity testing
-        var tvTest: TextView = findViewById(R.id.tv_test)
-        tvTest.setOnClickListener {
-            val chatIntent = Intent(this, VideoActivity::class.java)
-            startActivity(chatIntent)
-            finish()
-        }
     }
 
     private fun listenIfCallAccepted() {
