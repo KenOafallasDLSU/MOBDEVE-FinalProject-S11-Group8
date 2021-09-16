@@ -13,7 +13,6 @@
         android:id="@+id/cv_item_thread"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        app:cardBackgroundColor="@color/white"
         app:cardElevation="0dp">
 
         <androidx.constraintlayout.widget.ConstraintLayout
