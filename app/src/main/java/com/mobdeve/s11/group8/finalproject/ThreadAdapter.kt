@@ -81,19 +81,19 @@ class ThreadAdapter(var listener: OnItemClickListener) : RecyclerView.Adapter<Re
 
             // retrieve thread from database
             pBar.visibility = View.VISIBLE
-            database.reference.child(Collections.threads.name).child(threadId)
+            database.reference.child(Collections.Threads.name).child(threadId)
                 .addListenerForSingleValueEvent(object : ValueEventListener {
                     override fun onDataChange(snapshot: DataSnapshot) {
 
                         if (snapshot.hasChildren()){
-                            val temp = snapshot.child(Collections.users.name).value as ArrayList<String>
+                            val temp = snapshot.child(Collections.Users.name).value as ArrayList<String>
                             otherId = if (temp[0] == userId){ temp[1] } else { temp[0] }
 
-                            lastUpdated = snapshot.child(Collections.lastUpdated.name).value.toString()
-                            lastChat = snapshot.child(Collections.lastChat.name).value.toString()
+                            lastUpdated = snapshot.child(Collections.LastUpdated.name).value.toString()
+                            lastChat = snapshot.child(Collections.LastChat.name).value.toString()
 
                             // retrieve other user's name from database
-                            reference.child(otherId!!).child(Collections.name.name).addListenerForSingleValueEvent(object : ValueEventListener {
+                            reference.child(otherId!!).child(Collections.Name.name).addListenerForSingleValueEvent(object : ValueEventListener {
                                 override fun onDataChange(snapshot: DataSnapshot) {
                                     pBar.visibility = View.GONE
                                     senderName = snapshot.value.toString()
