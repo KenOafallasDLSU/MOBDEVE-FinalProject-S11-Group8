@@ -23,8 +23,6 @@ class CallingActivity : AppCompatActivity() {
         this.ibEnd = findViewById(R.id.ib_calling_end)
 
         this.ibEnd.setOnClickListener {
-            val chatIntent = Intent(this, ChatActivity::class.java)
-            startActivity(chatIntent)
             finish()
         }
 
