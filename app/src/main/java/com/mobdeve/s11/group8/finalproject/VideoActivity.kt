@@ -95,8 +95,6 @@ class VideoActivity : AppCompatActivity() {
         wvVideo.addJavascriptInterface(JavascriptInterface(this), "Android")
 
         loadVideoCall()
-
-
     }
 
     private fun loadVideoCall() {
@@ -111,8 +109,11 @@ class VideoActivity : AppCompatActivity() {
                 if(intent.extras != null) {
                     val connectionId: String = intent.getStringExtra(Keys.CONNECTION_ID.name).toString()
                     Log.d("PeerJS", connectionId)
+
                     startVideoCall(connectionId)
                 } else {
+                    userCallRef.child("connectionID").setValue(peerId)
+                    userCallRef.child("callAccepted").setValue(true)
                     Log.d("PeerJS", "Receiver")
                 }
             }

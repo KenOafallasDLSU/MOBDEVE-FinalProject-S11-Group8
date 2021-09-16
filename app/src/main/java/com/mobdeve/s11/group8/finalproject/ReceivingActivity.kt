@@ -40,9 +40,6 @@ class ReceivingActivity : AppCompatActivity() {
         this.ibReject = findViewById(R.id.ib_receiving_reject)
 
         this.ibAccept.setOnClickListener {
-            userCallRef.child("connectionID").setValue(this.peerId)
-            userCallRef.child("callAccepted").setValue(true)
-
             //go to call
             val callIntent = Intent(this, VideoActivity::class.java)
             startActivity(callIntent)
