@@ -3,6 +3,7 @@ package com.mobdeve.s11.group8.finalproject
 import android.content.Intent
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
+import android.util.Log
 import android.view.View
 import android.widget.*
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -54,6 +55,8 @@ class ThreadActivity : AppCompatActivity(), OnItemClickListener {
 
             override fun onDataChange(snapshot: DataSnapshot) {
                 if (snapshot.value != null) {
+                    Log.d("INCOMING", snapshot.value.toString())
+
                     val receivingIntent = Intent(this@ThreadActivity, ReceivingActivity::class.java)
                     startActivity(receivingIntent)
                 }

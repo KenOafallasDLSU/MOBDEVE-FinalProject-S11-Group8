@@ -48,7 +48,7 @@ class CallingActivity : AppCompatActivity() {
 
             override fun onDataChange(snapshot: DataSnapshot) {
                 if (snapshot.value.toString() == "true") {
-                    //listenForConnectionID()
+                    listenForConnectionID()
 
                 } else if(snapshot.value.toString() == "false") {
                     usersRef.child(partnerId).child("callHandler").setValue(null)

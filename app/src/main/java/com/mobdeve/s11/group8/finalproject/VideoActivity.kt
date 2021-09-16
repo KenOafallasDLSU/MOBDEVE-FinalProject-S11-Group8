@@ -15,6 +15,7 @@ import com.google.firebase.database.FirebaseDatabase
 import com.google.firebase.database.ValueEventListener
 import java.util.*
 import android.content.Intent
+import android.util.Log
 
 class VideoActivity : AppCompatActivity() {
 
@@ -97,7 +98,10 @@ class VideoActivity : AppCompatActivity() {
 
         if(intent.extras != null) {
             val connectionId: String = intent.getStringExtra(Keys.CONNECTION_ID.name).toString()
+            Log.d("PeerJS", connectionId)
             startVideoCall(connectionId)
+        } else {
+            Log.d("PeerJS", "Receiver")
         }
     }
 
