@@ -129,7 +129,9 @@ class ChatActivity : AppCompatActivity() {
     private fun initChatCall() {
         this.ibChatCall = findViewById(R.id.ib_chat_call)
         this.ibChatCall.setOnClickListener {
-
+            val callIntent = Intent(this, CallingActivity::class.java)
+            startActivity(callIntent)
+//            finish()
         }
     }
 

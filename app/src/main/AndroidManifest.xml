@@ -15,7 +15,10 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.TilkTalk"
         android:usesCleartextTraffic="true">
-        <activity android:name=".VideoActivity"></activity>
+        android:theme="@style/Theme.TilkTalk">
+        <activity android:name=".CallingActivity"></activity>
+        <activity android:name=".VideoActivity" />
+        <activity android:name=".ReceivingActivity" />
         <activity
             android:name=".ProfileActivity"
             android:exported="true"

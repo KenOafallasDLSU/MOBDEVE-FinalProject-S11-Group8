@@ -14,6 +14,7 @@ import com.google.firebase.database.DatabaseError
 import com.google.firebase.database.FirebaseDatabase
 import com.google.firebase.database.ValueEventListener
 import java.util.*
+import android.content.Intent
 
 class VideoActivity : AppCompatActivity() {
 
@@ -26,42 +27,22 @@ class VideoActivity : AppCompatActivity() {
     private val usersRef = rootRef.child("USERS")
     private val userCallRef = usersRef.child(userId).child("callHandler")
 
-    private var isAudio = true
-    private var isVideo = true
-
     private lateinit var wvVideo: WebView
-    private lateinit var ibVideoAudioToggle: ImageButton
-    private lateinit var ibVideoVideoToggle: ImageButton
-    private lateinit var ibVideoEnd: ImageButton
 
     private var uniqueID = ""
+
+    private lateinit var ibCam: ImageButton
+    private lateinit var ibEnd: ImageButton
+    private lateinit var ibMic: ImageButton
+
+    private var isCamOn: Boolean = true
+    private var isMicOn: Boolean = true
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_video)
 
-        this.ibVideoAudioToggle = findViewById(R.id.ib_video_audiotoggle)
-        this.ibVideoVideoToggle = findViewById(R.id.ib_video_videotoggle)
-        this.ibVideoEnd = findViewById(R.id.ib_video_end)
-
-        this.ibVideoAudioToggle.setOnClickListener {
-            this.isAudio = !this.isAudio
-            callJSFunction("javascript:toggleAudio(\"${this.isAudio}\")")
-            this.ibVideoAudioToggle.setImageResource(
-                if (true) R.drawable.backarrow else R.drawable.backarrow
-            )
-        }
-        this.ibVideoVideoToggle.setOnClickListener {
-            this.isVideo = !this.isVideo
-            callJSFunction("javascript:toggleVideo(\"${this.isVideo}\")")
-            this.ibVideoVideoToggle.setImageResource(
-                if (true) R.drawable.backarrow else R.drawable.backarrow
-            )
-        }
-        this.ibVideoEnd.setOnClickListener {
-
-        }
-
+        initComponents()
         setupWebView()
     }
 
@@ -170,5 +151,42 @@ class VideoActivity : AppCompatActivity() {
         userCallRef.setValue(null)
         wvVideo.loadUrl("about:blank")
         super.onDestroy()
+        initComponents()
+    }
+
+    private fun initComponents() {
+        this.ibCam = findViewById(R.id.ib_video_cam)
+        this.ibEnd = findViewById(R.id.ib_video_end)
+        this.ibMic = findViewById(R.id.ib_video_mic)
+
+        this.ibCam.setOnClickListener {
+            if(isCamOn) {
+                ibCam.setImageResource(R.drawable.offcam)
+                isCamOn = false
+            }
+            else {
+                ibCam.setImageResource(R.drawable.oncam)
+                isCamOn = true
+            }
+
+            callJSFunction("javascript:toggleVideo(\"${this.isCamOn}\")")
+        }
+
+        this.ibEnd.setOnClickListener {
+            finish()
+        }
+
+        this.ibMic.setOnClickListener {
+            if(isMicOn) {
+                ibMic.setImageResource(R.drawable.offmic)
+                isMicOn = false
+            }
+            else {
+                ibMic.setImageResource(R.drawable.onmic)
+                isMicOn = true
+            }
+
+            callJSFunction("javascript:toggleAudio(\"${this.isMicOn}\")")
+        }
     }
 }
