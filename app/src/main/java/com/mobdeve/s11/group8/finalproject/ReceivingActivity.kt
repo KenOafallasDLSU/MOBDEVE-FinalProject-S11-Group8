@@ -35,7 +35,7 @@ class ReceivingActivity : AppCompatActivity() {
     private fun initComponents() {
         this.ivUser = findViewById(R.id.iv_receiving_icon)
         this.tvUser = findViewById(R.id.tv_receiving_icon)
-        this.tvDesc = findViewById(R.id.tv_calling_desc)
+        this.tvDesc = findViewById(R.id.tv_receiving_desc)
         this.ibAccept = findViewById(R.id.ib_receiving_accept)
         this.ibReject = findViewById(R.id.ib_receiving_reject)
 
