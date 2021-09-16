@@ -96,22 +96,25 @@ class VideoActivity : AppCompatActivity() {
 
         loadVideoCall()
 
-        if(intent.extras != null) {
-            val connectionId: String = intent.getStringExtra(Keys.CONNECTION_ID.name).toString()
-            Log.d("PeerJS", connectionId)
-            startVideoCall(connectionId)
-        } else {
-            Log.d("PeerJS", "Receiver")
-        }
+
     }
 
     private fun loadVideoCall() {
         val filePath = "file:android_asset/call.html"
         wvVideo.loadUrl(filePath)
+        Log.d("PATH", wvVideo.getUrl().toString())
 
         wvVideo.webViewClient = object : WebViewClient() {
             override fun onPageFinished(view: WebView?, url: String?) {
                 callJSFunction("javascript:init(\"${peerId}\")")
+
+                if(intent.extras != null) {
+                    val connectionId: String = intent.getStringExtra(Keys.CONNECTION_ID.name).toString()
+                    Log.d("PeerJS", connectionId)
+                    startVideoCall(connectionId)
+                } else {
+                    Log.d("PeerJS", "Receiver")
+                }
             }
         }
     }

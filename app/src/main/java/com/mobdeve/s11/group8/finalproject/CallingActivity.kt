@@ -37,6 +37,7 @@ class CallingActivity : AppCompatActivity() {
         this.ibEnd = findViewById(R.id.ib_calling_end)
 
         this.ibEnd.setOnClickListener {
+            usersRef.child(partnerId).child("callHandler").setValue(null)
             finish()
         }
     }
