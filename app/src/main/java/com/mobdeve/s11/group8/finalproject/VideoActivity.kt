@@ -94,6 +94,11 @@ class VideoActivity : AppCompatActivity() {
         wvVideo.addJavascriptInterface(JavascriptInterface(this), "Android")
 
         loadVideoCall()
+
+        if(intent.extras != null) {
+            val connectionId: String = intent.getStringExtra(Keys.CONNECTION_ID.name).toString()
+            startVideoCall(connectionId)
+        }
     }
 
     private fun loadVideoCall() {
@@ -102,66 +107,13 @@ class VideoActivity : AppCompatActivity() {
 
         wvVideo.webViewClient = object : WebViewClient() {
             override fun onPageFinished(view: WebView?, url: String?) {
-                initializePeer()
+                callJSFunction("javascript:init(\"${peerId}\")")
             }
         }
     }
 
-    private fun initializePeer() {
-        callJSFunction("javascript:init(\"${this.peerId}\")")
-        userCallRef.child("incoming").addValueEventListener(object : ValueEventListener {
-            override fun onCancelled(error: DatabaseError) {}
-
-            override fun onDataChange(snapshot: DataSnapshot) {
-                receiveCallRequest(snapshot.value as? String)
-            }
-        })
-    }
-
-    //move to receiving activity
-    private fun receiveCallRequest(caller: String?) {
-        if (caller == null) return
-
-        //on accept
-        userCallRef.child("connectionID").setValue(this.peerId)
-        userCallRef.child("callAccepted").setValue(true)
-        //move to call
-
-        //on reject
-        userCallRef.child("incoming").setValue(false)
-    }
-
-    //called when a user initiates a call, move to ChatActivity
-    private fun sendCallRequest() {
-        if(!isPeerConnected) {
-            Toast.makeText(this, "Cannot connect. Please check internet", Toast.LENGTH_LONG).show()
-            return
-        }
-
-        usersRef.child(partnerId).child("callHandler").child("incoming").setValue(userId)
-        usersRef.child(partnerId).child("callHandler").child("callAccepted").addValueEventListener(object: ValueEventListener {
-            override fun onCancelled(error: DatabaseError) {}
-
-            override fun onDataChange(snapshot: DataSnapshot) {
-                if (snapshot.value.toString() == "true") {
-                    listenForConnectionID()
-                }
-            }
-        })
-    }
-
-    //waits for other user to answer call, move to CallingActivity
-    private fun listenForConnectionID() {
-        usersRef.child(partnerId).child("callHandler").child("connectionID").addValueEventListener(object: ValueEventListener {
-            override fun onCancelled(error: DatabaseError) {}
-
-            override fun onDataChange(snapshot: DataSnapshot) {
-                if (snapshot.value == null)
-                    return
-                //start the call
-                callJSFunction("javascript:startCall(\"${snapshot.value}\")")
-            }
-        })
+    private fun startVideoCall(connectionId : String) {
+        callJSFunction("javascript:startCall(\"${connectionId}\")")
     }
 
     private fun callJSFunction(functionString: String) {
