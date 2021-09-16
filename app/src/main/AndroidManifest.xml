@@ -9,10 +9,13 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/Theme.TilkTalk">
+        <activity android:name=".CallingActivity"></activity>
+        <activity android:name=".VideoActivity" />
+        <activity android:name=".ReceivingActivity" />
         <activity
             android:name=".ProfileActivity"
             android:exported="true"
-            android:parentActivityName=".ThreadActivity"/>
+            android:parentActivityName=".ThreadActivity" />
         <activity android:name=".ChatActivity" />
         <activity android:name=".ThreadActivity" />
         <activity android:name=".RegisterActivity" />
