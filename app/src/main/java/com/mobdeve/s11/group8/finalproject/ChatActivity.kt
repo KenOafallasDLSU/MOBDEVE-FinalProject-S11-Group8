@@ -101,6 +101,8 @@ class ChatActivity : AppCompatActivity() {
 
             override fun onDataChange(snapshot: DataSnapshot) {
                 if (snapshot.value != null) {
+                    Log.d("INCOMING", snapshot.value.toString())
+
                     val receivingIntent = Intent(this@ChatActivity, ReceivingActivity::class.java)
                     startActivity(receivingIntent)
                 }

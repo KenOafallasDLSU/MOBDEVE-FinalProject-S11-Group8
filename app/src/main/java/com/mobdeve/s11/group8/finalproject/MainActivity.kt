@@ -6,6 +6,9 @@ import android.view.View
 import android.widget.*
 import androidx.appcompat.app.AppCompatActivity
 import com.google.firebase.auth.FirebaseAuth
+import android.Manifest
+import android.content.pm.PackageManager
+import androidx.core.app.ActivityCompat
 
 class MainActivity : AppCompatActivity() {
 
@@ -15,12 +18,20 @@ class MainActivity : AppCompatActivity() {
     private lateinit var tvCreate: TextView
     private lateinit var pbLogin: ProgressBar
 
+    // Permissions
+    val permissions = arrayOf(Manifest.permission.CAMERA, Manifest.permission.RECORD_AUDIO)
+    val requestCode = 1
+
     // Firebase
     private lateinit var mAuth: FirebaseAuth
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
+
+        if (!isPermissionGranted()) {
+            askPermission()
+        }
 
         this.initFirebase()
         this.initComponents()
@@ -29,6 +40,18 @@ class MainActivity : AppCompatActivity() {
             startActivity(Intent(this, ThreadActivity::class.java))
             finish()
         }
+    }
+
+    private fun isPermissionGranted(): Boolean {
+        permissions.forEach {
+            if(ActivityCompat.checkSelfPermission(this, it) != PackageManager.PERMISSION_GRANTED)
+                return false
+        }
+        return true
+    }
+
+    private fun askPermission() {
+        ActivityCompat.requestPermissions(this, permissions, requestCode)
     }
 
     private fun initFirebase() {
