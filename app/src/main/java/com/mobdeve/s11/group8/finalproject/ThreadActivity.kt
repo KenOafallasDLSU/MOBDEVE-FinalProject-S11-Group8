@@ -36,6 +36,7 @@ class ThreadActivity : AppCompatActivity(), OnItemClickListener {
     private lateinit var reference: DatabaseReference
     private lateinit var user: FirebaseUser
     private lateinit var userId: String
+    private val userCallRef = FirebaseDatabase.getInstance().reference.child("USERS").child(userId).child("callHandler")
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -44,6 +45,18 @@ class ThreadActivity : AppCompatActivity(), OnItemClickListener {
         initRecyclerView()
         initFirebase()
         initData()
+        listenToCalls()
+    }
+
+    private fun listenToCalls() {
+        userCallRef.child("incoming").addValueEventListener(object : ValueEventListener {
+            override fun onCancelled(error: DatabaseError) {}
+
+            override fun onDataChange(snapshot: DataSnapshot) {
+                val receivingIntent = Intent(this@ThreadActivity, ReceivingActivity::class.java)
+                startActivity(receivingIntent)
+            }
+        })
     }
 
     private fun searchEmails(email : String){

@@ -40,6 +40,7 @@ class ChatActivity : AppCompatActivity() {
 
     private val rootRef = FirebaseDatabase.getInstance().reference
     private val usersRef = rootRef.child("USERS")
+    private val userCallRef = usersRef.child(userId).child("callHandler")
     private lateinit var threadRef: DatabaseReference
     private lateinit var chatsRef: DatabaseReference
 
@@ -90,6 +91,19 @@ class ChatActivity : AppCompatActivity() {
             }
             override fun onCancelled(error: DatabaseError) {}
         })
+
+        listenToCalls()
+    }
+
+    private fun listenToCalls() {
+        userCallRef.child("incoming").addValueEventListener(object : ValueEventListener {
+            override fun onCancelled(error: DatabaseError) {}
+
+            override fun onDataChange(snapshot: DataSnapshot) {
+                val receivingIntent = Intent(this@ChatActivity, ReceivingActivity::class.java)
+                startActivity(receivingIntent)
+            }
+        })
     }
 
     private fun initChatThreadDesign() {
@@ -129,9 +143,11 @@ class ChatActivity : AppCompatActivity() {
     private fun initChatCall() {
         this.ibChatCall = findViewById(R.id.ib_chat_call)
         this.ibChatCall.setOnClickListener {
+            usersRef.child(partnerId).child("callHandler").child("incoming").setValue(userId)
+
             val callIntent = Intent(this, CallingActivity::class.java)
+            callIntent.putExtra(Keys.CALL_PARTNER.name, partnerId)
             startActivity(callIntent)
-//            finish()
         }
     }
 

@@ -6,8 +6,18 @@ import android.os.Bundle
 import android.widget.ImageButton
 import android.widget.ImageView
 import android.widget.TextView
+import com.google.firebase.auth.FirebaseAuth
+import com.google.firebase.database.FirebaseDatabase
 
 class ReceivingActivity : AppCompatActivity() {
+
+    private val user = FirebaseAuth.getInstance().currentUser!!
+    private val userId: String = user.uid
+    private val peerId: String = "TilkTolk" + userId
+
+    private val rootRef = FirebaseDatabase.getInstance().reference
+    private val usersRef = rootRef.child("USERS")
+    private val userCallRef = usersRef.child(userId).child("callHandler")
 
     private lateinit var ivUser: ImageView
     private lateinit var tvUser: TextView
@@ -30,11 +40,19 @@ class ReceivingActivity : AppCompatActivity() {
         this.ibReject = findViewById(R.id.ib_receiving_reject)
 
         this.ibAccept.setOnClickListener {
+            userCallRef.child("connectionID").setValue(this.peerId)
+            userCallRef.child("callAccepted").setValue(true)
 
+            //go to call
+            val callIntent = Intent(this, VideoActivity::class.java)
+            startActivity(callIntent)
         }
 
         this.ibReject.setOnClickListener {
+            userCallRef.child("incoming").setValue(null)
+            userCallRef.child("callAccepted").setValue(false)
 
+            finish()
         }
     }
 }
