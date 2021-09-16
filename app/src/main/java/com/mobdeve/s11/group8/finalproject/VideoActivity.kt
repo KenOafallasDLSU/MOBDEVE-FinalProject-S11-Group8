@@ -102,7 +102,7 @@ class VideoActivity : AppCompatActivity() {
     private fun loadVideoCall() {
         val filePath = "file:android_asset/call.html"
         wvVideo.loadUrl(filePath)
-        Log.d("PATH", wvVideo.getUrl().toString())
+        Log.d("PATH", wvVideo.url.toString())
 
         wvVideo.webViewClient = object : WebViewClient() {
             override fun onPageFinished(view: WebView?, url: String?) {
