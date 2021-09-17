@@ -25,7 +25,6 @@ class ChatActivity : AppCompatActivity() {
     private lateinit var ivChatAvatar: ImageView
     private lateinit var tvChatAvatarLetter: TextView
     private lateinit var tvChatName: TextView
-    private lateinit var clChatFoot: ConstraintLayout
 
     private lateinit var ibChatBack: ImageButton
     private lateinit var ibChatCall: ImageButton
@@ -55,7 +54,6 @@ class ChatActivity : AppCompatActivity() {
         this.ivChatAvatar = findViewById(R.id.iv_chat_avatar)
         this.tvChatAvatarLetter = findViewById(R.id.tv_chat_avatar_letter)
         this.tvChatName = findViewById(R.id.tv_chat_name)
-        this.clChatFoot = findViewById(R.id.cl_chat_foot)
 
         //get thread extra
 
@@ -115,7 +113,7 @@ class ChatActivity : AppCompatActivity() {
 
         this.tvChatName.setTextColor(color)
         this.ivChatAvatar.background.setTint(color)
-        this.clChatFoot.background.setTint(color)
+        this.etChatInput.background.setTint(color)
         this.tvChatAvatarLetter.text = partnerName[0].toString()
         this.tvChatName.text = partnerName
     }
