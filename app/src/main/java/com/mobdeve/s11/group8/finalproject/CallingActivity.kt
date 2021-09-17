@@ -45,7 +45,6 @@ class CallingActivity : AppCompatActivity() {
         this.tvDesc.text = "Calling $desc..."
 
         this.ibEnd.setOnClickListener {
-            usersRef.child(partnerId).child("callHandler").child("callAccepted").setValue(false)
             usersRef.child(partnerId).child("callHandler").setValue(null)
             finish()
         }
@@ -59,6 +58,7 @@ class CallingActivity : AppCompatActivity() {
             override fun onDataChange(snapshot: DataSnapshot) {
                 if (snapshot.value.toString() == "true") {
                     listenForConnectionID()
+
                 } else if(snapshot.value.toString() == "false") {
                     usersRef.child(partnerId).child("callHandler").setValue(null)
                     finish()
@@ -78,7 +78,6 @@ class CallingActivity : AppCompatActivity() {
                 val callIntent = Intent(this@CallingActivity, VideoActivity::class.java)
                 callIntent.putExtra(Keys.CONNECTION_ID.name, snapshot.value.toString())
                 startActivity(callIntent)
-                finish()
             }
         })
     }

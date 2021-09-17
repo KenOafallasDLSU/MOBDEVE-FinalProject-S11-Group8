@@ -88,7 +88,6 @@ class ReceivingActivity : AppCompatActivity() {
         this.ibReject.setOnClickListener {
             userCallRef.child("incoming").setValue(null)
             userCallRef.child("callAccepted").setValue(false)
-
             finish()
         }
     }
