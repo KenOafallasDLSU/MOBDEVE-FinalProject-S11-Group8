@@ -147,6 +147,7 @@ class ChatActivity : AppCompatActivity() {
 
             val callIntent = Intent(this, CallingActivity::class.java)
             callIntent.putExtra(Keys.CALL_PARTNER.name, partnerId)
+            callIntent.putExtra(Keys.PARTNER_NAME.name, partnerName)
             startActivity(callIntent)
         }
     }
