@@ -12,6 +12,7 @@ import com.google.firebase.database.ValueEventListener
 
 class CallingActivity : AppCompatActivity() {
 
+    private lateinit var tvIcon: TextView
     private lateinit var tvDesc: TextView
     private lateinit var ibEnd: ImageButton
 
@@ -33,8 +34,14 @@ class CallingActivity : AppCompatActivity() {
     }
 
     private fun initComponents() {
+        this.tvIcon = findViewById(R.id.tv_calling_icon)
+
         this.tvDesc = findViewById(R.id.tv_calling_desc)
         this.ibEnd = findViewById(R.id.ib_calling_end)
+
+        var desc = intent.getStringExtra(Keys.PARTNER_NAME.name).toString()
+        this.tvIcon.text = desc[0].toString()
+        this.tvDesc.text = "Calling " + desc + "..."
 
         this.ibEnd.setOnClickListener {
             usersRef.child(partnerId).child("callHandler").setValue(null)
