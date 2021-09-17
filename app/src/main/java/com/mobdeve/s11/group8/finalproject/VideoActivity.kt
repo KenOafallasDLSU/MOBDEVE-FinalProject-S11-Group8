@@ -26,7 +26,7 @@ class VideoActivity : AppCompatActivity() {
 
     private var isPeerConnected = false
     private val rootRef = FirebaseDatabase.getInstance().reference
-    private val usersRef = rootRef.child("USERS")
+    private val usersRef = rootRef.child(Collections.users.name)
     private val userCallRef = usersRef.child(userId).child("callHandler")
 
     private lateinit var ibCam: ImageButton

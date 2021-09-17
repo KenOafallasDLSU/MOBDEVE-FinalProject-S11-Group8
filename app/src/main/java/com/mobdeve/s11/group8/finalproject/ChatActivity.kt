@@ -39,7 +39,7 @@ class ChatActivity : AppCompatActivity() {
     private lateinit var currentThread: String
 
     private val rootRef = FirebaseDatabase.getInstance().reference
-    private val usersRef = rootRef.child("USERS")
+    private val usersRef = rootRef.child(Keys.USERS.name)
     private val userCallRef = usersRef.child(userId).child("callHandler")
     private lateinit var threadRef: DatabaseReference
     private lateinit var chatsRef: DatabaseReference
@@ -60,15 +60,15 @@ class ChatActivity : AppCompatActivity() {
         //get thread extra
 
         this.currentThread = intent.getStringExtra(Keys.THREAD_ID_KEY.name).toString()
-        this.threadRef = rootRef.child("threads").child(this.currentThread)
-        this.chatsRef = this.threadRef.child("chats")
+        this.threadRef = rootRef.child(Collections.threads.name).child(this.currentThread)
+        this.chatsRef = this.threadRef.child(Collections.chats.name)
         Log.w("ThisThread", this.currentThread)
 
         //get chat partner
         threadRef.addListenerForSingleValueEvent(object : ValueEventListener {
             override fun onDataChange(snapshot: DataSnapshot) {
-                val user1: String = snapshot.child("users").child("0").value.toString()
-                val user2: String = snapshot.child("users").child("1").value.toString()
+                val user1: String = snapshot.child(Collections.users.name).child("0").value.toString()
+                val user2: String = snapshot.child(Collections.users.name).child("1").value.toString()
                 if (user1 == userId)
                     partnerId = user2
                 else
@@ -76,7 +76,7 @@ class ChatActivity : AppCompatActivity() {
                 Log.w("ThisPartner", partnerId)
                 usersRef.child(partnerId).addListenerForSingleValueEvent(object : ValueEventListener {
                     override fun onDataChange(userSnapshot: DataSnapshot) {
-                        partnerName = userSnapshot.child("name").value.toString()
+                        partnerName = userSnapshot.child(Collections.dname.name).value.toString()
                         Log.w("ThisPartner", partnerName)
 
                         initChatThreadDesign()
@@ -112,9 +112,7 @@ class ChatActivity : AppCompatActivity() {
 
     private fun initChatThreadDesign() {
         val color: Int = resources.getIntArray(R.array.appcolors)[(partnerName?.length ?: 0) % 5]
-//        val color1: Int = resources.getIntArray(R.array.appcolors)[1]
-//        val color2: Int = resources.getIntArray(R.array.appcolors)[2]
-//        this.clChatHead.background.setTint(color)
+
         this.tvChatName.setTextColor(color)
         this.ivChatAvatar.background.setTint(color)
         this.clChatFoot.background.setTint(color)
@@ -160,8 +158,8 @@ class ChatActivity : AppCompatActivity() {
         this.ibChatSend.setOnClickListener {
             if(etChatInput.text.toString() != "") {
                 if(chatAdapter.itemCount <= 0) {
-                    usersRef.child(userId).child("threads").child(currentThread).setValue(currentThread)
-                    usersRef.child(partnerId).child("threads").child(currentThread).setValue(currentThread)
+                    usersRef.child(userId).child(Collections.threads.name).child(currentThread).setValue(currentThread)
+                    usersRef.child(partnerId).child(Collections.threads.name).child(currentThread).setValue(currentThread)
                 }
                 val newChat = Chat(userId, partnerId, etChatInput.text.toString(), Calendar.getInstance())
                 val newChatId = threadRef.push().key.toString()
@@ -173,8 +171,8 @@ class ChatActivity : AppCompatActivity() {
                 chatsRef.child(newChatId).setValue(chatHashMap)
 
                 val threadHashMap: HashMap<String, String> = HashMap()
-                threadHashMap.put("lastChat", newChat.body)
-                threadHashMap.put("lastUpdated", newChat.getDateTimeString())
+                threadHashMap.put(Collections.lastChat.name, newChat.body)
+                threadHashMap.put(Collections.lastUpdated.name, newChat.getDateTimeString())
                 threadRef.updateChildren(threadHashMap as Map<String, Any>)
             } else {
                 Toast.makeText(applicationContext,"Enter a message",Toast.LENGTH_SHORT).show()

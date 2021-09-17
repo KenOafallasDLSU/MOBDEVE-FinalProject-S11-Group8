@@ -18,7 +18,7 @@ class CallingActivity : AppCompatActivity() {
     private lateinit var partnerId: String
 
     private val rootRef = FirebaseDatabase.getInstance().reference
-    private val usersRef = rootRef.child("USERS")
+    private val usersRef = rootRef.child(Keys.USERS.name)
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
