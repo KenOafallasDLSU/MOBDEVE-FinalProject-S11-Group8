@@ -67,7 +67,7 @@ class ThreadActivity : AppCompatActivity(), OnItemClickListener {
     private fun searchEmails(email : String){
 
         pBar.visibility = View.VISIBLE
-        this.reference.orderByChild(Collections.Email.name).equalTo(email)
+        this.reference.orderByChild(Collections.email.name).equalTo(email)
             .addListenerForSingleValueEvent(object : ValueEventListener {
                 override fun onDataChange(snapshot: DataSnapshot) {
                     if (snapshot.hasChildren()) {
@@ -75,10 +75,10 @@ class ThreadActivity : AppCompatActivity(), OnItemClickListener {
 
                         if (userId != profileId) {
                             val thread = Thread(arrayOf(userId, profileId).toCollection(ArrayList<String>()))
-                            val newThreadKey = database.getReference(Collections.Threads.name).push().key
+                            val newThreadKey = database.getReference(Collections.threads.name).push().key
 
                             if (newThreadKey != null) {
-                                database.getReference(Collections.Threads.name).child(newThreadKey)
+                                database.getReference(Collections.threads.name).child(newThreadKey)
                                 .setValue(thread).addOnCompleteListener { task ->
                                     if (task.isSuccessful) {
                                         pBar.visibility = View.GONE
@@ -115,13 +115,13 @@ class ThreadActivity : AppCompatActivity(), OnItemClickListener {
         reference = database.reference.child(Keys.USERS.name)
         user = FirebaseAuth.getInstance().currentUser!!
         userId = user.uid
-        userCallRef = FirebaseDatabase.getInstance().reference.child("USERS").child(userId).child("callHandler")
+        userCallRef = FirebaseDatabase.getInstance().reference.child(Keys.USERS.name).child(userId).child("callHandler")
 
         pBar.visibility = View.VISIBLE
         this.reference.child(userId).addListenerForSingleValueEvent(object : ValueEventListener {
             override fun onDataChange(snapshot: DataSnapshot) {
                 pBar.visibility = View.GONE
-                letter = snapshot.child(Collections.Name.name).value.toString().get(0).toString()
+                letter = snapshot.child(Collections.dname.name).value.toString().get(0).toString()
                 color = resources.getIntArray(R.array.appcolors)[(snapshot.value.toString().length) % 5]
                 tvThreadAvatarLetter.setText(letter)
                 tvThreadAvatarLetter.background.setTint(color)
@@ -138,7 +138,7 @@ class ThreadActivity : AppCompatActivity(), OnItemClickListener {
     private fun initData(){
 
         pBar.visibility = View.VISIBLE
-        this.reference.child(userId).child(Collections.Threads.name).addListenerForSingleValueEvent(object : ValueEventListener{
+        this.reference.child(userId).child(Collections.threads.name).addListenerForSingleValueEvent(object : ValueEventListener{
             override fun onDataChange(snapshot: DataSnapshot) {
                 pBar.visibility = View.GONE
                 var list : ArrayList<String> = ArrayList()

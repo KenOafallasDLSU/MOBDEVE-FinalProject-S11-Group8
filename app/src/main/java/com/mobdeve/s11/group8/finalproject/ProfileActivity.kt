@@ -45,7 +45,7 @@ class ProfileActivity : AppCompatActivity() {
                 this.etName.error = "Required field"
                 this.etName.requestFocus()
             } else {
-                this.reference.child(userId).child(Collections.Name.name).setValue(editName)
+                this.reference.child(userId).child(Collections.dname.name).setValue(editName)
                 Toast.makeText(this, "Succesfully updated user.", Toast.LENGTH_SHORT).show()
                 finish();
                 startActivity(intent);
@@ -79,8 +79,8 @@ class ProfileActivity : AppCompatActivity() {
         this.reference.child(userId).addListenerForSingleValueEvent(object : ValueEventListener {
             override fun onDataChange(snapshot: DataSnapshot) {
                 pBar.visibility = View.GONE
-                name = snapshot.child(Collections.Name.name).value.toString()
-                email = snapshot.child(Collections.Email.name).value.toString()
+                name = snapshot.child(Collections.dname.name).value.toString()
+                email = snapshot.child(Collections.email.name).value.toString()
                 val color = resources.getIntArray(R.array.appcolors)[(snapshot.value.toString().length) % 5]
 
                 tvAvatarLetter.setText(name.get(0).toString())

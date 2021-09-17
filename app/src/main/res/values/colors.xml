@@ -9,8 +9,8 @@
     <color name="white">#FFFFFFFF</color>
 
     <color name="gray">#FF343434</color>
-    <color name="accept">#00CE2D</color>
-    <color name="red">#FFC50000</color>
+    <color name="accept">#8BC34A</color>
+    <color name="red">#F44336</color>
     <color name="blue_200">#FFD4F0F1</color>
     <color name="blue_500">#FF8FC9CA</color>
     <color name="green_200">#FFCCE2CB</color>

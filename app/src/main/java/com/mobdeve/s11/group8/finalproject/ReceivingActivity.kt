@@ -16,7 +16,7 @@ class ReceivingActivity : AppCompatActivity() {
     private val peerId: String = "TilkTolk" + userId
 
     private val rootRef = FirebaseDatabase.getInstance().reference
-    private val usersRef = rootRef.child("USERS")
+    private val usersRef = rootRef.child(Keys.USERS.name)
     private val userCallRef = usersRef.child(userId).child("callHandler")
 
     private lateinit var ivUser: ImageView
