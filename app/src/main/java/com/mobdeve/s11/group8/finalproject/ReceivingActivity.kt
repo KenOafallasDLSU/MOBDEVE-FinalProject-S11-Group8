@@ -4,14 +4,19 @@ import android.annotation.SuppressLint
 import android.content.Intent
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
+import android.util.Log
+import android.view.View
 import android.widget.ImageButton
 import android.widget.ImageView
 import android.widget.TextView
+import android.widget.Toast
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.database.DataSnapshot
 import com.google.firebase.database.DatabaseError
 import com.google.firebase.database.FirebaseDatabase
 import com.google.firebase.database.ValueEventListener
+import java.util.regex.Matcher
+import java.util.regex.Pattern
 
 class ReceivingActivity : AppCompatActivity() {
 
@@ -19,10 +24,12 @@ class ReceivingActivity : AppCompatActivity() {
     private val userId: String = user.uid
     private val peerId: String = "TilkTolk" + userId
 
-    private val rootRef = FirebaseDatabase.getInstance().reference
-    private val usersRef = rootRef.child(Keys.USERS.name)
-    private val userCallRef = usersRef.child(userId).child("callHandler")
+    private var rootRef = FirebaseDatabase.getInstance().reference
+    private var usersRef = rootRef.child(Keys.USERS.name)
+    private var userCallRef = usersRef.child(userId).child("callHandler")
 
+    private lateinit var partnerId: String
+    private lateinit var partnerName: String
     private lateinit var ivUser: ImageView
     private lateinit var tvIcon: TextView
     private lateinit var tvDesc: TextView
@@ -43,9 +50,23 @@ class ReceivingActivity : AppCompatActivity() {
         this.ibAccept = findViewById(R.id.ib_receiving_accept)
         this.ibReject = findViewById(R.id.ib_receiving_reject)
 
-        var desc = "nameee"
-        tvIcon.text = desc[0].toString()
-        tvDesc.text = "$desc wants to video call"
+        //look for user in db
+        this.partnerId = userCallRef.child("incoming").toString()
+
+        val pattern: Pattern = Pattern.compile("USERS/(.*?)/callHandler", Pattern.DOTALL)
+        val matcher: Matcher = pattern.matcher(partnerId)
+        while (matcher.find()) { this.partnerId = matcher.group(1) }
+        this.tvDesc.text = partnerId
+
+        this.usersRef.child(partnerId).addValueEventListener(object : ValueEventListener {
+            override fun onCancelled(error: DatabaseError) {}
+            override fun onDataChange(snapshot: DataSnapshot) {
+                val desc = snapshot.child(Collections.dname.name).value.toString()
+                tvDesc.text = desc + " is calling..."
+                tvIcon.text = desc[0].toString()
+            }
+        })
+
 
         this.ibAccept.setOnClickListener {
             //go to call
