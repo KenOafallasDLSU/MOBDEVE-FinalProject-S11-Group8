@@ -1,5 +1,6 @@
 package com.mobdeve.s11.group8.finalproject
 
+import android.annotation.SuppressLint
 import android.content.Intent
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
@@ -41,7 +42,7 @@ class CallingActivity : AppCompatActivity() {
 
         var desc = intent.getStringExtra(Keys.PARTNER_NAME.name).toString()
         this.tvIcon.text = desc[0].toString()
-        this.tvDesc.text = "Calling " + desc + "..."
+        this.tvDesc.text = "Calling $desc..."
 
         this.ibEnd.setOnClickListener {
             usersRef.child(partnerId).child("callHandler").setValue(null)
