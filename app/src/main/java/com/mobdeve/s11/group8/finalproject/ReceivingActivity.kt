@@ -67,11 +67,22 @@ class ReceivingActivity : AppCompatActivity() {
             }
         })
 
+        this.usersRef.child(userId).child("callHandler").child("incoming").addValueEventListener(object:
+            ValueEventListener {
+            override fun onCancelled(error: DatabaseError) {}
+            override fun onDataChange(snapshot: DataSnapshot) {
+                if(snapshot.value == null) {
+                    usersRef.child(partnerId).child("callHandler").setValue(null)
+                    finish()
+                }
+            }
+        })
 
         this.ibAccept.setOnClickListener {
             //go to call
             val callIntent = Intent(this, VideoActivity::class.java)
             startActivity(callIntent)
+            finish()
         }
 
         this.ibReject.setOnClickListener {
