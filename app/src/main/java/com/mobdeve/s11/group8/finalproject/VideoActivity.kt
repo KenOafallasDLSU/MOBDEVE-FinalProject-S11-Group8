@@ -1,5 +1,6 @@
 package com.mobdeve.s11.group8.finalproject
 
+import android.content.Intent
 import android.os.Bundle
 import android.util.Log
 import android.view.SurfaceView
@@ -50,11 +51,6 @@ class VideoActivity : AppCompatActivity() {
                 setupRemoteVideo(uid)
             }
         }
-
-        // if the call partner left, end the call
-        override fun onUserOffline(uid: Int, reason: Int) {
-            finish()
-        }
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -76,6 +72,20 @@ class VideoActivity : AppCompatActivity() {
 
         initComponents()
         initializeAndJoinChannel()
+        initListenToEnd()
+    }
+
+    private fun initListenToEnd() {
+        usersRef.child(connectionId).child("callHandler").child("connectionID").addValueEventListener(object : ValueEventListener {
+            override fun onCancelled(error: DatabaseError) {}
+
+            override fun onDataChange(snapshot: DataSnapshot) {
+                Log.d("CALL STATUS", snapshot.value.toString())
+                if (snapshot.value == null) {
+                    finish()
+                }
+            }
+        })
     }
 
     // starts the RTC engine for video calls and starts the user's local video
@@ -126,7 +136,8 @@ class VideoActivity : AppCompatActivity() {
     override fun onDestroy() {
         userCallRef.setValue(null)
         usersRef.child(connectionId).child("callHandler").setValue(null)
-        mRtcEngine?.leaveChannel()
+
+        mRtcEngine.leaveChannel()
         RtcEngine.destroy()
 
         super.onDestroy()
