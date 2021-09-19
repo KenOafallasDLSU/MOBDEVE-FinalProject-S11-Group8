@@ -13,12 +13,14 @@ import com.google.firebase.database.*
 import de.hdodenhof.circleimageview.CircleImageView
 import kotlin.collections.ArrayList
 
+// click listener interface
 interface OnItemClickListener{
     fun onItemClick(position : Int)
 }
 
 class ThreadAdapter(var listener: OnItemClickListener) : RecyclerView.Adapter<RecyclerView.ViewHolder>(){
 
+    // list of threads
     private var items: List<String> = ArrayList()
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): RecyclerView.ViewHolder {
@@ -67,6 +69,7 @@ class ThreadAdapter(var listener: OnItemClickListener) : RecyclerView.Adapter<Re
 
             initFirebase()
 
+            // initialize views
             tvAvatarLetter = itemView.findViewById(R.id.tv_thread_item_avatar_letter)
             tvDisplayName = itemView.findViewById(R.id.tv_thread_item_name)
             tvTextMessage  = itemView.findViewById(R.id.tv_thread_item_text)
@@ -75,6 +78,7 @@ class ThreadAdapter(var listener: OnItemClickListener) : RecyclerView.Adapter<Re
             cvItem = itemView.findViewById(R.id.cv_item_thread)
             pBar = itemView.findViewById(R.id.pb_thread_item)
 
+            // initialize click listeners for every item in the rev=cycler view
             this.cvItem.setOnClickListener{
                 listener.onItemClick(adapterPosition)
             }
@@ -85,10 +89,14 @@ class ThreadAdapter(var listener: OnItemClickListener) : RecyclerView.Adapter<Re
                 .addListenerForSingleValueEvent(object : ValueEventListener {
                     override fun onDataChange(snapshot: DataSnapshot) {
 
+                        // if snapshot is not empty
                         if (snapshot.hasChildren()){
+
+                            // get name of peer
                             val temp = snapshot.child(Collections.users.name).value as ArrayList<String>
                             otherId = if (temp[0] == userId){ temp[1] } else { temp[0] }
 
+                            // get last message and last message update time with peer
                             lastUpdated = snapshot.child(Collections.lastUpdated.name).value.toString()
                             lastChat = snapshot.child(Collections.lastChat.name).value.toString()
 
@@ -101,6 +109,8 @@ class ThreadAdapter(var listener: OnItemClickListener) : RecyclerView.Adapter<Re
                                 }
                                 override fun onCancelled(error: DatabaseError) {
                                     pBar.visibility = View.GONE
+
+                                    // this is the default name if failed to retrieve sender name
                                     senderName = "user"
                                 }
                             })
@@ -117,6 +127,7 @@ class ThreadAdapter(var listener: OnItemClickListener) : RecyclerView.Adapter<Re
         }
 
         fun updateComponents(){
+            // update thread or chat based on data of peer
             tvDisplayName.text = senderName
             tvAvatarLetter.text = senderName?.get(0)?.toString()
             tvTextMessage.text = lastChat
@@ -126,6 +137,7 @@ class ThreadAdapter(var listener: OnItemClickListener) : RecyclerView.Adapter<Re
         }
 
         fun initFirebase(){
+            // initialize firebase
             database = FirebaseDatabase.getInstance()
             reference = database.reference.child(Keys.USERS.name)
             user = FirebaseAuth.getInstance().currentUser!!

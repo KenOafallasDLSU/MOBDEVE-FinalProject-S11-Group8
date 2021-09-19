@@ -26,7 +26,7 @@ class ThreadActivity : AppCompatActivity(), OnItemClickListener {
     private lateinit var tvTitle : TextView
     private lateinit var tvTitleIcon : ImageView
 
-    private lateinit var profileId: String
+    private lateinit var peerId: String
     private lateinit var etEmail: EditText
     private lateinit var letter : String
     private var color by Delegates.notNull<Int>()
@@ -45,7 +45,8 @@ class ThreadActivity : AppCompatActivity(), OnItemClickListener {
 
         initRecyclerView()
         initFirebase()
-        initData()
+        updateUserView()
+        updateUserThreads()
         listenToCalls()
     }
 
@@ -67,24 +68,41 @@ class ThreadActivity : AppCompatActivity(), OnItemClickListener {
     private fun searchEmails(email : String){
 
         pBar.visibility = View.VISIBLE
+
+        // search for emails matching the email parameter from the database
         this.reference.orderByChild(Collections.email.name).equalTo(email)
             .addListenerForSingleValueEvent(object : ValueEventListener {
                 override fun onDataChange(snapshot: DataSnapshot) {
-                    if (snapshot.hasChildren()) {
-                        for (data in snapshot.children) profileId = data.key.toString()
 
-                        if (userId != profileId) {
-                            val thread = Thread(arrayOf(userId, profileId).toCollection(ArrayList<String>()))
+                    // if snapshot is not empty, there is a user with a matching email
+                    if (snapshot.hasChildren()) {
+
+                        // we don't have to worry about this, since it is ensured that all emails are unique
+                        for (data in snapshot.children) peerId = data.key.toString()
+
+                        // valid if the user did not enter their own email
+                        if (userId != peerId) {
+
+                            // create a new thread with peer, then get the key
+                            val thread = Thread(arrayOf(userId, peerId).toCollection(ArrayList<String>()))
                             val newThreadKey = database.getReference(Collections.threads.name).push().key
 
                             if (newThreadKey != null) {
+
+                                // get reference to new thread
                                 database.getReference(Collections.threads.name).child(newThreadKey)
                                 .setValue(thread).addOnCompleteListener { task ->
                                     if (task.isSuccessful) {
+
                                         pBar.visibility = View.GONE
+
+                                        // create intent going to chat activity
                                         val intent = Intent(this@ThreadActivity, ChatActivity::class.java)
+
+                                        // pass key of newly created thread
                                         intent.putExtra(Keys.THREAD_ID_KEY.name, newThreadKey.toString())
                                         startActivity(intent)
+
                                     } else {
                                         pBar.visibility = View.GONE
                                         Toast.makeText(this@ThreadActivity,"Oh no! Something went wrong :(", Toast.LENGTH_SHORT).show()
@@ -111,12 +129,17 @@ class ThreadActivity : AppCompatActivity(), OnItemClickListener {
     }
 
     private fun initFirebase() {
+
+        // initialize firebase references and values
         database = FirebaseDatabase.getInstance()
         reference = database.reference.child(Keys.USERS.name)
         user = FirebaseAuth.getInstance().currentUser!!
         userId = user.uid
         userCallRef = FirebaseDatabase.getInstance().reference.child(Keys.USERS.name).child(userId).child("callHandler")
+    }
 
+    private fun updateUserView() {
+        // update layout based on the logged-in user (name, avatar, colors)
         pBar.visibility = View.VISIBLE
         this.reference.child(userId).addListenerForSingleValueEvent(object : ValueEventListener {
             override fun onDataChange(snapshot: DataSnapshot) {
@@ -135,35 +158,43 @@ class ThreadActivity : AppCompatActivity(), OnItemClickListener {
         })
     }
 
-    private fun initData(){
-
+    private fun updateUserThreads(){
+        // get threads of logged in user
         pBar.visibility = View.VISIBLE
         this.reference.child(userId).child(Collections.threads.name).addListenerForSingleValueEvent(object : ValueEventListener{
             override fun onDataChange(snapshot: DataSnapshot) {
+
                 pBar.visibility = View.GONE
-                var list : ArrayList<String> = ArrayList()
+
+                // initialize arraylist and threadIDs from the database
+                val list : ArrayList<String> = ArrayList()
                 for (data in snapshot.children) list.add(data.key.toString())
                 threadIds = list.toCollection(ArrayList<String>())
+
+                // if there are no threads, show "no threads" message
                 if (threadIds.size == 0) { tvNoChats.visibility = View.VISIBLE }
                 else { tvNoChats.visibility = View.GONE }
 
+                // pass list to threadAdaptor
                 threadAdapter.submitList(threadIds)
-                threadAdapter.notifyDataSetChanged()
+                threadAdapter.notifyItemRangeChanged(0, threadAdapter.itemCount)
             }
             override fun onCancelled(error: DatabaseError) {
                 pBar.visibility = View.GONE
                 Toast.makeText(this@ThreadActivity, "Error loading data.", Toast.LENGTH_SHORT).show()
             }
         })
-
     }
 
     private fun initRecyclerView(){
+
+        // initialize recycler view and adapter
         val rvThreads : RecyclerView = findViewById(R.id.rv_thread_list)
         rvThreads.layoutManager = LinearLayoutManager(this@ThreadActivity)
         threadAdapter = ThreadAdapter(this)
         rvThreads.adapter = threadAdapter
 
+        // initialize views
         tvTitle = findViewById(R.id.tv_thread_app_name)
         tvTitleIcon = findViewById(R.id.iv_thread_app_icon)
         tvNoChats = findViewById(R.id.tv_threads_no_chats)
@@ -175,8 +206,14 @@ class ThreadActivity : AppCompatActivity(), OnItemClickListener {
         }
         etEmail = findViewById(R.id.et_thread_email)
         btnAdd = findViewById(R.id.btn_thread_add)
+
+        // add email button listener
         btnAdd.setOnClickListener { v ->
+
+            // get text from input field
             val email = etEmail.text.toString().trim()
+
+            // check if not empty
             if (email.isNotEmpty() && userId.isNotEmpty()){
                 searchEmails(email)
             } else {
@@ -185,14 +222,18 @@ class ThreadActivity : AppCompatActivity(), OnItemClickListener {
         }
     }
 
+    // if item on recycler view is clicked, redirect to associated chat
     override fun onItemClick(position: Int) {
         val intent = Intent(this, ChatActivity::class.java)
+
+        // pass id of chat of associated chat based on adapter position, then open
         intent.putExtra(Keys.THREAD_ID_KEY.name, threadIds[position])
         startActivity(intent);
     }
 
     override fun onResume() {
         super.onResume()
-        initData()
+        updateUserView()
+        updateUserThreads()
     }
 }
