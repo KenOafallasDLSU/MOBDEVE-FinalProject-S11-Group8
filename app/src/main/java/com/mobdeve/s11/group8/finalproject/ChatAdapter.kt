@@ -49,6 +49,7 @@ class ChatAdapter(private var chatList: ArrayList<Chat>) :
         return this.chatList.size
     }
 
+    // gets layout type, left when sender is partner, right when sender is user
     override fun getItemViewType(position: Int): Int {
         if (this.userId == this.chatList.get(position).senderId)
             return RIGHT_LAYOUT

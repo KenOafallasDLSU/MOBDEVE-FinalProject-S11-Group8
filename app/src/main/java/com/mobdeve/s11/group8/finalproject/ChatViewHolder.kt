@@ -13,14 +13,17 @@ class ChatViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
     private val tvItemChatBody: TextView = itemView.findViewById(R.id.tv_item_chat_body)
     private val tvItemChatDate: TextView = itemView.findViewById(R.id.tv_item_chat_date)
 
+    // sets message shown in chat bubble
     fun setItemChatBody(body: String) {
         this.tvItemChatBody.text = body
     }
 
+    // sets date showin in chat bubble
     fun setItemChatDate(date: String) {
         this.tvItemChatDate.text = date
     }
 
+    // sets color of chat bubble
     fun setItemChatBubbleColor(sender: String) {
         this.clItemChatBubble.background.setTint(itemView.getResources().getIntArray(R.array.appcolors)[sender.length%5])
     }

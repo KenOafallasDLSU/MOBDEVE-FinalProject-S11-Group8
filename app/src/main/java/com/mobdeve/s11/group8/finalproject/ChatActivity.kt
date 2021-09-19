@@ -15,11 +15,13 @@ import kotlin.collections.ArrayList
 import kotlin.collections.HashMap
 
 class ChatActivity : AppCompatActivity() {
+    //chat recycler view
     private lateinit var rvChat: RecyclerView
     private lateinit var chatManager: RecyclerView.LayoutManager
     private lateinit var chatAdapter: ChatAdapter
     private val chatList: ArrayList<Chat> = ArrayList()
 
+    //layout views
     private lateinit var etChatInput: EditText
     private lateinit var clChatHead: ConstraintLayout
     private lateinit var ivChatAvatar: ImageView
@@ -30,20 +32,19 @@ class ChatActivity : AppCompatActivity() {
     private lateinit var ibChatCall: ImageButton
     private lateinit var ibChatSend: ImageButton
 
-    // get current user from auth
+    // get current user from Firebase auth
     private val user = FirebaseAuth.getInstance().currentUser!!
     private val userId: String = user.uid
     private lateinit var partnerId: String
     private lateinit var partnerName: String
     private lateinit var currentThread: String
 
+    // Firebase references
     private val rootRef = FirebaseDatabase.getInstance().reference
     private val usersRef = rootRef.child(Keys.USERS.name)
     private val userCallRef = usersRef.child(userId).child("callHandler")
     private lateinit var threadRef: DatabaseReference
     private lateinit var chatsRef: DatabaseReference
-
-
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -56,7 +57,6 @@ class ChatActivity : AppCompatActivity() {
         this.tvChatName = findViewById(R.id.tv_chat_name)
 
         //get thread extra
-
         this.currentThread = intent.getStringExtra(Keys.THREAD_ID_KEY.name).toString()
         this.threadRef = rootRef.child(Collections.threads.name).child(this.currentThread)
         this.chatsRef = this.threadRef.child(Collections.chats.name)
@@ -93,6 +93,7 @@ class ChatActivity : AppCompatActivity() {
         listenToCalls()
     }
 
+    // sets up listener for video call requests
     private fun listenToCalls() {
         userCallRef.child("incoming").addValueEventListener(object : ValueEventListener {
             override fun onCancelled(error: DatabaseError) {}
@@ -108,6 +109,7 @@ class ChatActivity : AppCompatActivity() {
         })
     }
 
+    // dynamically changes app theme based on length of user's and partner's name
     private fun initChatThreadDesign() {
         val color: Int = resources.getIntArray(R.array.appcolors)[(partnerName?.length ?: 0) % 5]
 
@@ -118,6 +120,7 @@ class ChatActivity : AppCompatActivity() {
         this.tvChatName.text = partnerName
     }
 
+    //initializes recycler view
     private fun initRecyclerView() {
         this.rvChat = findViewById(R.id.rv_chat)
 
@@ -130,6 +133,7 @@ class ChatActivity : AppCompatActivity() {
         this.rvChat.adapter = this.chatAdapter
     }
 
+    // deletes chat thread if user who made the chat thread left without making the first chat
     private fun initChatBack() {
         this.ibChatBack = findViewById(R.id.ib_chat_back)
         this.ibChatBack.setOnClickListener{
@@ -140,6 +144,8 @@ class ChatActivity : AppCompatActivity() {
         }
     }
 
+    // sends video call request to partner on call button click
+    // starts calling activity
     private fun initChatCall() {
         this.ibChatCall = findViewById(R.id.ib_chat_call)
         this.ibChatCall.setOnClickListener {
@@ -152,6 +158,7 @@ class ChatActivity : AppCompatActivity() {
         }
     }
 
+    // sends message by adding it to Firebase chat thread when send button is clicked
     private fun initChatSend() {
         this.ibChatSend = findViewById(R.id.ib_chat_send)
         this.ibChatSend.setOnClickListener {
@@ -181,6 +188,8 @@ class ChatActivity : AppCompatActivity() {
         }
     }
 
+    // initializes listener for the chat thread
+    // updates the recycler view whenever a new chat is added to the database
     private fun initListener() {
         val chatListener = object : ChildEventListener {
             override fun onChildAdded(dataSnapshot: DataSnapshot, previousChildName: String?) {
