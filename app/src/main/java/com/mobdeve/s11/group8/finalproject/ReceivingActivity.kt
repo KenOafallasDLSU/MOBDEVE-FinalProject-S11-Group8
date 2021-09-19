@@ -73,6 +73,7 @@ class ReceivingActivity : AppCompatActivity() {
             override fun onDataChange(snapshot: DataSnapshot) {
                 if(snapshot.value == null) {
                     usersRef.child(partnerId).child("callHandler").setValue(null)
+                    usersRef.child(userId).child("callHandler").setValue(null)
                     finish()
                 }
             }

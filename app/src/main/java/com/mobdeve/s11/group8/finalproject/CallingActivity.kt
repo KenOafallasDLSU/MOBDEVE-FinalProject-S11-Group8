@@ -6,6 +6,7 @@ import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.widget.ImageButton
 import android.widget.TextView
+import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.database.DataSnapshot
 import com.google.firebase.database.DatabaseError
 import com.google.firebase.database.FirebaseDatabase
@@ -18,6 +19,7 @@ class CallingActivity : AppCompatActivity() {
     private lateinit var ibEnd: ImageButton
 
     private lateinit var partnerId: String
+    private lateinit var userId: String
 
     private val rootRef = FirebaseDatabase.getInstance().reference
     private val usersRef = rootRef.child(Keys.USERS.name)
@@ -28,6 +30,7 @@ class CallingActivity : AppCompatActivity() {
 
         //get partner ID from intent
         partnerId = intent.getStringExtra(Keys.CALL_PARTNER.name).toString()
+        userId = FirebaseAuth.getInstance().uid.toString();
 
         initComponents();
 
@@ -46,6 +49,7 @@ class CallingActivity : AppCompatActivity() {
 
         this.ibEnd.setOnClickListener {
             usersRef.child(partnerId).child("callHandler").setValue(null)
+            usersRef.child(userId).child("callHandler").setValue(null)
             finish()
         }
     }
@@ -78,6 +82,7 @@ class CallingActivity : AppCompatActivity() {
                 val callIntent = Intent(this@CallingActivity, VideoActivity::class.java)
                 callIntent.putExtra(Keys.CONNECTION_ID.name, snapshot.value.toString())
                 startActivity(callIntent)
+                finish()
             }
         })
     }
