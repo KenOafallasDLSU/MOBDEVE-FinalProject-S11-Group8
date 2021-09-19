@@ -139,14 +139,14 @@ class VideoActivity : AppCompatActivity() {
 
     // exit handlers
     override fun onBackPressed() {
-        usersRef.child(peerId).child("callHandler").setValue(null)
+        usersRef.child(channel).child("callHandler").setValue(null)
         usersRef.child(userId).child("callHandler").setValue(null)
         finish()
     }
 
     override fun onDestroy() {
         userCallRef.setValue(null)
-        usersRef.child(peerId).child("callHandler").setValue(null)
+        usersRef.child(channel).child("callHandler").setValue(null)
         mRtcEngine?.leaveChannel()
         RtcEngine.destroy()
 
