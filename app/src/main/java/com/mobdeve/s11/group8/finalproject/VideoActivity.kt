@@ -7,7 +7,10 @@ import android.widget.FrameLayout
 import android.widget.ImageButton
 import androidx.appcompat.app.AppCompatActivity
 import com.google.firebase.auth.FirebaseAuth
+import com.google.firebase.database.DataSnapshot
+import com.google.firebase.database.DatabaseError
 import com.google.firebase.database.FirebaseDatabase
+import com.google.firebase.database.ValueEventListener
 import io.agora.rtc.IRtcEngineEventHandler
 import io.agora.rtc.RtcEngine
 import io.agora.rtc.video.VideoCanvas
@@ -97,19 +100,21 @@ class VideoActivity : AppCompatActivity() {
 
         val remoteFrame: SurfaceView = RtcEngine.CreateRendererView(baseContext)
         remoteFrame.setZOrderOnTop(true)
-        remoteFrame.setZOrderMediaOverlay(true)
+        remoteFrame.setZOrderMediaOverlay(false)
         remoteContainer.addView(remoteFrame)
         mRtcEngine!!.setupRemoteVideo(VideoCanvas(remoteFrame, VideoCanvas.RENDER_MODE_FIT, uid))
     }
 
     // exit handlers
     override fun onBackPressed() {
+        usersRef.child(peerId).child("callHandler").setValue(null)
+        usersRef.child(userId).child("callHandler").setValue(null)
         finish()
     }
 
     override fun onDestroy() {
         userCallRef.setValue(null)
-
+        usersRef.child(peerId).child("callHandler").setValue(null)
         mRtcEngine?.leaveChannel()
         RtcEngine.destroy()
 
