@@ -75,19 +75,18 @@ class VideoActivity : AppCompatActivity() {
         initListenToEnd()
     }
 
-    private val endListener: ValueEventListener = object : ValueEventListener {
-        override fun onCancelled(error: DatabaseError) {}
-
-        override fun onDataChange(snapshot: DataSnapshot) {
-            Log.d("CALL STATUS", snapshot.value.toString())
-            if (snapshot.value == null) {
-                finish()
-            }
-        }
-    }
-
     private fun initListenToEnd() {
-        usersRef.child(connectionId).child("callHandler").child("connectionID").addValueEventListener(endListener)
+        usersRef.child(connectionId).child("callHandler").child("connectionID").addValueEventListener(object : ValueEventListener {
+            override fun onCancelled(error: DatabaseError) {}
+
+            override fun onDataChange(snapshot: DataSnapshot) {
+                Log.d("CALL STATUS", snapshot.value.toString())
+                if (snapshot.value == null) {
+                    usersRef.child(connectionId).child("callHandler").child("connectionID").removeEventListener(this)
+                    finish()
+                }
+            }
+        })
     }
 
     // starts the RTC engine for video calls and starts the user's local video
@@ -139,7 +138,6 @@ class VideoActivity : AppCompatActivity() {
         userCallRef.setValue(null)
         usersRef.child(connectionId).child("callHandler").setValue(null)
 
-        usersRef.child(connectionId).child("callHandler").child("connectionID").removeEventListener(endListener)
         mRtcEngine.leaveChannel()
         RtcEngine.destroy()
 
