@@ -33,48 +33,78 @@ class ProfileActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_profile)
 
-        initRecyclerView()
+        initView()
         initFirebase()
+        initData()
         initListeners()
     }
 
+    // initialize edit button and log out button
     private fun initListeners() {
+
+        // if edit button is clicked
         btnEdit.setOnClickListener{ v ->
+            // get text from edit input field
             val editName = etName.text.toString().trim()
+
+            // if name is empty, inform user
             if(editName.isEmpty()) {
                 this.etName.error = "Required field"
                 this.etName.requestFocus()
             } else {
+
+                // update the user's name on the database, inform user
                 this.reference.child(userId).child(Collections.dname.name).setValue(editName)
                 Toast.makeText(this, "Succesfully updated user.", Toast.LENGTH_SHORT).show()
+
+                // refreshes page
                 finish();
                 startActivity(intent);
             }
         }
+
+        // if log out button is clicked
         btnLogout.setOnClickListener{ v ->
-            var builder = AlertDialog.Builder(this)
+
+            // create confirmation dialog box
+            val builder = AlertDialog.Builder(this)
+
+            // set values
             builder.setTitle("Log Out")
             builder.setMessage("Are you sure you want to log out?")
+
+            // if user clicked yes
             builder.setPositiveButton("Yes", DialogInterface.OnClickListener{dialog, id ->
+                // sign out user, inform user
                 FirebaseAuth.getInstance().signOut();
                 Toast.makeText(this, "Successfully logged out user.", Toast.LENGTH_SHORT).show()
+
+                // redirect to login page
                 val intent = Intent(this, MainActivity::class.java)
                 finish();
                 startActivity(intent)
             })
+
+            // if user clicked no, do nothing
             builder.setNegativeButton("No", DialogInterface.OnClickListener{dialog, id ->
                 dialog.cancel()
             })
+
+            // show alert dialog box
             builder.create().show()
         }
     }
 
+    // initialize firebase
     private fun initFirebase() {
         database = FirebaseDatabase.getInstance()
         reference = database.reference.child(Keys.USERS.name)
         user = FirebaseAuth.getInstance().currentUser!!
         userId = user.uid
+    }
 
+    // initialize Data
+    private fun initData() {
         pBar.visibility = View.VISIBLE
         this.reference.child(userId).addListenerForSingleValueEvent(object : ValueEventListener {
             override fun onDataChange(snapshot: DataSnapshot) {
@@ -96,7 +126,8 @@ class ProfileActivity : AppCompatActivity() {
         })
     }
 
-    private fun initRecyclerView() {
+    // initialize view
+    private fun initView() {
         tvAvatarLetter = findViewById(R.id.tv_profile_avatar_letter)
         tvName = findViewById(R.id.tv_profile_name)
         tvEmail = findViewById(R.id.tv_profile_email)
