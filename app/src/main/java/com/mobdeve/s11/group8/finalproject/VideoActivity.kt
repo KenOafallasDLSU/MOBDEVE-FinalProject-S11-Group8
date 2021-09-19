@@ -5,12 +5,7 @@ import android.util.Log
 import android.view.SurfaceView
 import android.widget.FrameLayout
 import android.widget.ImageButton
-import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
-import com.android.volley.Request
-import com.android.volley.Response
-import com.android.volley.toolbox.JsonObjectRequest
-import com.android.volley.toolbox.Volley
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.database.DataSnapshot
 import com.google.firebase.database.DatabaseError
@@ -19,14 +14,13 @@ import com.google.firebase.database.ValueEventListener
 import io.agora.rtc.IRtcEngineEventHandler
 import io.agora.rtc.RtcEngine
 import io.agora.rtc.video.VideoCanvas
-
+import java.util.*
 
 class VideoActivity : AppCompatActivity() {
 
     private val user = FirebaseAuth.getInstance().currentUser!!
     private val userId: String = user.uid
-    private lateinit var channel: String
-    private lateinit var agoraToken: String
+    private val peerId: String = "TilkTolk" + userId
 
     private val rootRef = FirebaseDatabase.getInstance().reference
     private val usersRef = rootRef.child(Keys.USERS.name)
@@ -57,44 +51,18 @@ class VideoActivity : AppCompatActivity() {
         setContentView(R.layout.activity_video)
 
         if(intent.extras != null) {
-            agoraToken = intent.getStringExtra(Keys.CONNECTION_ID.name).toString()
-            channel = intent.getStringExtra(Keys.PARTNER_ID.name).toString()
-
-            Log.d("AgoraToken", agoraToken)
-
-            initComponents()
-            initializeAndJoinChannel()
+            val connectionId: String = intent.getStringExtra(Keys.CONNECTION_ID.name).toString()
+            Log.d("PeerJS", connectionId)
 
         } else {
-            channel = userId
-            val url = "https://tilktalk-key-server.herokuapp.com/access_token?channel=${channel}&uid=${userId}"
-            Log.d("RequestUrl", url)
+            userCallRef.child("connectionID").setValue(peerId)
+            userCallRef.child("callAccepted").setValue(true)
+            Log.d("PeerJS", "Receiver")
 
-            val requestQueue = Volley.newRequestQueue(this)
-            val jsonObjectRequest = JsonObjectRequest(
-                Request.Method.GET, url, null,
-                Response.Listener { response ->
-                    agoraToken = response.getString("token")
-                    userCallRef.child("connectionID").setValue(agoraToken)
-                    userCallRef.child("callAccepted").setValue(true)
-
-                    Log.d("AgoraToken", agoraToken)
-
-                    initComponents()
-                    initializeAndJoinChannel()
-                },
-                Response.ErrorListener { error ->
-                    val toast = Toast.makeText(
-                        applicationContext,
-                        "Failed to make connection",
-                        Toast.LENGTH_SHORT
-                    )
-                    toast.show()
-                }
-            )
-
-            requestQueue.add(jsonObjectRequest)
         }
+
+        initComponents()
+        initializeAndJoinChannel()
     }
 
     private fun initializeAndJoinChannel() {
@@ -119,7 +87,7 @@ class VideoActivity : AppCompatActivity() {
         mRtcEngine!!.setupLocalVideo(VideoCanvas(localFrame, VideoCanvas.RENDER_MODE_FIT, 0))
 
         // Join the channel without token.
-        mRtcEngine!!.joinChannel(agoraToken, channel, "", 0)
+        mRtcEngine!!.joinChannel(getString(R.string.agora_token), getString(R.string.agora_channel), "", 0)
     }
 
     private fun setupRemoteVideo(uid: Int) {
@@ -139,14 +107,14 @@ class VideoActivity : AppCompatActivity() {
 
     // exit handlers
     override fun onBackPressed() {
-        usersRef.child(channel).child("callHandler").setValue(null)
+        usersRef.child(peerId).child("callHandler").setValue(null)
         usersRef.child(userId).child("callHandler").setValue(null)
         finish()
     }
 
     override fun onDestroy() {
         userCallRef.setValue(null)
-        usersRef.child(channel).child("callHandler").setValue(null)
+        usersRef.child(peerId).child("callHandler").setValue(null)
         mRtcEngine?.leaveChannel()
         RtcEngine.destroy()
 

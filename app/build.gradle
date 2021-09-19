@@ -45,7 +45,6 @@ dependencies {
 
     //Agora RTC SDK for video call
     implementation 'io.agora.rtc:full-sdk:3.5.0'
-    implementation 'com.android.volley:volley:1.2.1'
     //Agora RTM SDK for chat messaging
     //implementation 'io.agora.rtm:rtm-sdk:1.2.2'
 
