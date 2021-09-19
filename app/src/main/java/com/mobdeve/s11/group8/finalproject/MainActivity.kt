@@ -29,6 +29,7 @@ class MainActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
 
+        // if user has not granted permission, ask for permission
         if (!isPermissionGranted()) {
             askPermission()
         }
@@ -36,12 +37,14 @@ class MainActivity : AppCompatActivity() {
         this.initFirebase()
         this.initComponents()
 
+        // if user's login details are valid, redirect to chat list
         if (this.mAuth.currentUser != null) {
             startActivity(Intent(this, ThreadActivity::class.java))
             finish()
         }
     }
 
+    // checks if user has granted permissions for camera and microphone
     private fun isPermissionGranted(): Boolean {
         permissions.forEach {
             if(ActivityCompat.checkSelfPermission(this, it) != PackageManager.PERMISSION_GRANTED)
@@ -50,6 +53,7 @@ class MainActivity : AppCompatActivity() {
         return true
     }
 
+    // asks user for camera and microphone permissions
     private fun askPermission() {
         ActivityCompat.requestPermissions(this, permissions, requestCode)
     }
@@ -66,8 +70,11 @@ class MainActivity : AppCompatActivity() {
         this.pbLogin = findViewById(R.id.pb_login)
 
         this.btnLogin.setOnClickListener {
+            // get user input
             var email = etEmail.text.toString().trim()
             var password = etPassword.text.toString().trim()
+
+            // if email and password are both filled in, sign in
             if(!checkEmpty(email, password)) {
                 signIn(email, password)
             }
@@ -80,15 +87,19 @@ class MainActivity : AppCompatActivity() {
         }
     }
 
+    // checks for empty fields
+    // returns true if there is an empty field and false if none
     private fun checkEmpty(email: String, password: String): Boolean {
         var hasEmpty: Boolean = false;
 
+        // if email field is empty, prompt user to input email
         if(email.isEmpty()) {
             this.etEmail.error = "Required field"
             this.etEmail.requestFocus()
             hasEmpty = true
         }
 
+        // if password is empty, prompt user to input password
         if(password.isEmpty()) {
             this.etPassword.error = "Required field"
             this.etPassword.requestFocus()
@@ -98,6 +109,7 @@ class MainActivity : AppCompatActivity() {
         return hasEmpty
     }
 
+    // logs the user in to their account given an email and a password
     private fun signIn(email: String, password: String) {
         this.pbLogin.visibility = View.VISIBLE
 
@@ -105,6 +117,7 @@ class MainActivity : AppCompatActivity() {
             .addOnCompleteListener(
                 this
             ) { task ->
+                // if successfully logged in, redirect to chat list
                 if (task.isSuccessful) {
                     val chatIntent = Intent(this, ThreadActivity::class.java)
                     startActivity(chatIntent)
@@ -115,6 +128,7 @@ class MainActivity : AppCompatActivity() {
             }
     }
 
+    // presents an error message when user fails to log in
     private fun failedLogin() {
         this.pbLogin.visibility = View.GONE
         Toast.makeText(this, "Login failed", Toast.LENGTH_SHORT).show()
