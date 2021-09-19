@@ -82,12 +82,6 @@ class VideoActivity : AppCompatActivity() {
 
         initComponents()
         initializeAndJoinChannel()
-        initCallEndListener()
-    }
-
-    // when other user exits the call, end call for this user too
-    private fun initCallEndListener() {
-
     }
 
     // starts the RTC engine for video calls and starts the user's local video
@@ -120,10 +114,6 @@ class VideoActivity : AppCompatActivity() {
     private fun setupRemoteVideo(uid: Int) {
         Log.d("REMOTE", "INIT")
         val remoteContainer = findViewById(R.id.fl_video_remote) as FrameLayout
-
-        if (remoteContainer.childCount >= 1) {
-            return
-        }
 
         val remoteFrame: SurfaceView = RtcEngine.CreateRendererView(baseContext)
         remoteFrame.setZOrderOnTop(true)
