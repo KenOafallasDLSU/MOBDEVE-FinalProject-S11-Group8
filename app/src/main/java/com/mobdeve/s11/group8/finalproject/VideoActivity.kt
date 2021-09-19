@@ -18,23 +18,28 @@ import java.util.*
 
 class VideoActivity : AppCompatActivity() {
 
+    // gets user from Firebase auth
     private val user = FirebaseAuth.getInstance().currentUser!!
     private val userId: String = user.uid
     private val peerId: String = "TilkTolk" + userId
 
+    // sets Firebase references
     private val rootRef = FirebaseDatabase.getInstance().reference
     private val usersRef = rootRef.child(Keys.USERS.name)
     private val userCallRef = usersRef.child(userId).child("callHandler")
 
+    // layout views
     private lateinit var ibCam: ImageButton
     private lateinit var ibEnd: ImageButton
     private lateinit var ibMic: ImageButton
 
+    // for cam and mic toggles
     private var isCamOn: Boolean = true
     private var isMicOn: Boolean = true
 
     private lateinit var mRtcEngine: RtcEngine
 
+    // sets up remote video when another user joins the call
     private val mRtcEventHandler = object : IRtcEngineEventHandler() {
         // Listen for the remote user joining the channel to get the uid of the user.
         override fun onUserJoined(uid: Int, elapsed: Int) {
@@ -51,20 +56,22 @@ class VideoActivity : AppCompatActivity() {
         setContentView(R.layout.activity_video)
 
         if(intent.extras != null) {
+            // if user is calling, gets connectionid sent by receiver
             val connectionId: String = intent.getStringExtra(Keys.CONNECTION_ID.name).toString()
             Log.d("PeerJS", connectionId)
 
         } else {
+            // if user is receiving, sends connectionid to caller and status that call is accepted
             userCallRef.child("connectionID").setValue(peerId)
             userCallRef.child("callAccepted").setValue(true)
             Log.d("PeerJS", "Receiver")
-
         }
 
         initComponents()
         initializeAndJoinChannel()
     }
 
+    // starts the RTC engine for video calls and starts the user's local video
     private fun initializeAndJoinChannel() {
         try {
             mRtcEngine = RtcEngine.create(baseContext, getString(R.string.agora_id), mRtcEventHandler)
@@ -90,6 +97,7 @@ class VideoActivity : AppCompatActivity() {
         mRtcEngine!!.joinChannel(getString(R.string.agora_token), getString(R.string.agora_channel), "", 0)
     }
 
+    // starts the remote video obtained from the call partner's stream
     private fun setupRemoteVideo(uid: Int) {
         Log.d("REMOTE", "INIT")
         val remoteContainer = findViewById(R.id.fl_video_remote) as FrameLayout
@@ -137,9 +145,9 @@ class VideoActivity : AppCompatActivity() {
                 isCamOn = true
             }
 
-            //actually turn off cam
-            mRtcEngine.muteLocalVideoStream(isCamOn)
-            Log.d("VIDEO", isCamOn.toString())
+            //actually toggle cam
+            mRtcEngine.muteLocalVideoStream(!isCamOn)
+            Log.d("VIDEO", (!isCamOn).toString())
         }
 
         this.ibEnd.setOnClickListener {
@@ -157,8 +165,8 @@ class VideoActivity : AppCompatActivity() {
             }
 
             //actually toggle mic
-            mRtcEngine.muteLocalAudioStream(isMicOn)
-            Log.d("AUDIO", isCamOn.toString())
+            mRtcEngine.muteLocalAudioStream(!isMicOn)
+            Log.d("AUDIO", (!isMicOn).toString())
         }
     }
 }

@@ -20,16 +20,19 @@ import java.util.regex.Pattern
 
 class ReceivingActivity : AppCompatActivity() {
 
+    // gets user info from Firebase auth
     private val user = FirebaseAuth.getInstance().currentUser!!
     private val userId: String = user.uid
     private val peerId: String = "TilkTolk" + userId
+    private lateinit var partnerId: String
+    private lateinit var partnerName: String
 
+    // gets Firebase db references
     private var rootRef = FirebaseDatabase.getInstance().reference
     private var usersRef = rootRef.child(Keys.USERS.name)
     private var userCallRef = usersRef.child(userId).child("callHandler")
 
-    private lateinit var partnerId: String
-    private lateinit var partnerName: String
+    // layout views
     private lateinit var ivUser: ImageView
     private lateinit var tvIcon: TextView
     private lateinit var tvDesc: TextView
@@ -58,6 +61,7 @@ class ReceivingActivity : AppCompatActivity() {
         while (matcher.find()) { this.partnerId = matcher.group(1) }
         this.tvDesc.text = partnerId
 
+        // gets partner's name
         this.usersRef.child(partnerId).addValueEventListener(object : ValueEventListener {
             override fun onCancelled(error: DatabaseError) {}
             override fun onDataChange(snapshot: DataSnapshot) {
@@ -67,11 +71,19 @@ class ReceivingActivity : AppCompatActivity() {
             }
         })
 
+        // when caller drops call before receiver answers,
+        // remove call handler and finish this activity
         this.usersRef.child(userId).child("callHandler").child("incoming").addValueEventListener(object:
             ValueEventListener {
             override fun onCancelled(error: DatabaseError) {}
             override fun onDataChange(snapshot: DataSnapshot) {
                 if(snapshot.value == null) {
+                    val toast = Toast.makeText(
+                        applicationContext,
+                        "Call Request Dropped by Caller",
+                        Toast.LENGTH_SHORT
+                    )
+                    toast.show()
                     usersRef.child(partnerId).child("callHandler").setValue(null)
                     usersRef.child(userId).child("callHandler").setValue(null)
                     finish()
@@ -79,6 +91,7 @@ class ReceivingActivity : AppCompatActivity() {
             }
         })
 
+        // on accept button click, starts video activity
         this.ibAccept.setOnClickListener {
             //go to call
             val callIntent = Intent(this, VideoActivity::class.java)
@@ -86,6 +99,7 @@ class ReceivingActivity : AppCompatActivity() {
             finish()
         }
 
+        // on reject button click, sets accepted status in db to false
         this.ibReject.setOnClickListener {
             userCallRef.child("incoming").setValue(null)
             userCallRef.child("callAccepted").setValue(false)
