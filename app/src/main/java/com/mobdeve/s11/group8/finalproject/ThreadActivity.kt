@@ -219,6 +219,8 @@ class ThreadActivity : AppCompatActivity(), OnItemClickListener {
             } else {
                 Toast.makeText(this,"Email cannot be blank :P", Toast.LENGTH_SHORT).show()
             }
+
+            etEmail.setText("")
         }
     }
 
