@@ -53,12 +53,6 @@ class VideoActivity : AppCompatActivity() {
 
         // if the call partner left, end the call
         override fun onUserOffline(uid: Int, reason: Int) {
-            val toast = Toast.makeText(
-                applicationContext,
-                "Call Ended",
-                Toast.LENGTH_SHORT
-            )
-            toast.show()
             finish()
         }
     }
