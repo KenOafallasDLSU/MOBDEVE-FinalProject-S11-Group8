@@ -20,9 +20,9 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.TilkTalk"
         android:usesCleartextTraffic="true">
-        <activity android:name=".CallingActivity" />
-        <activity android:name=".VideoActivity" />
-        <activity android:name=".ReceivingActivity" />
+        <activity android:name=".CallingActivity" android:noHistory="true"/>
+        <activity android:name=".VideoActivity" android:noHistory="true"/>
+        <activity android:name=".ReceivingActivity" android:noHistory="true"/>
         <activity
             android:name=".ProfileActivity"
             android:exported="true"

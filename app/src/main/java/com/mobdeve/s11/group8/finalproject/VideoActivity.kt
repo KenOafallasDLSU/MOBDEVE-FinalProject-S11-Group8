@@ -5,6 +5,7 @@ import android.util.Log
 import android.view.SurfaceView
 import android.widget.FrameLayout
 import android.widget.ImageButton
+import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.database.DataSnapshot
@@ -21,7 +22,7 @@ class VideoActivity : AppCompatActivity() {
     // gets user from Firebase auth
     private val user = FirebaseAuth.getInstance().currentUser!!
     private val userId: String = user.uid
-    private val peerId: String = "TilkTolk" + userId
+    private lateinit var connectionId: String
 
     // sets Firebase references
     private val rootRef = FirebaseDatabase.getInstance().reference
@@ -49,6 +50,17 @@ class VideoActivity : AppCompatActivity() {
                 setupRemoteVideo(uid)
             }
         }
+
+        // if the call partner left, end the call
+        override fun onUserOffline(uid: Int, reason: Int) {
+            val toast = Toast.makeText(
+                applicationContext,
+                "Call Ended",
+                Toast.LENGTH_SHORT
+            )
+            toast.show()
+            finish()
+        }
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -57,18 +69,25 @@ class VideoActivity : AppCompatActivity() {
 
         if(intent.extras != null) {
             // if user is calling, gets connectionid sent by receiver
-            val connectionId: String = intent.getStringExtra(Keys.CONNECTION_ID.name).toString()
-            Log.d("PeerJS", connectionId)
+            connectionId = intent.getStringExtra(Keys.CONNECTION_ID.name).toString()
+            Log.d("Calling", connectionId)
 
         } else {
             // if user is receiving, sends connectionid to caller and status that call is accepted
-            userCallRef.child("connectionID").setValue(peerId)
+            connectionId = userId
+            userCallRef.child("connectionID").setValue(connectionId)
             userCallRef.child("callAccepted").setValue(true)
-            Log.d("PeerJS", "Receiver")
+            Log.d("Calling", "Receiver")
         }
 
         initComponents()
         initializeAndJoinChannel()
+        initCallEndListener()
+    }
+
+    // when other user exits the call, end call for this user too
+    private fun initCallEndListener() {
+
     }
 
     // starts the RTC engine for video calls and starts the user's local video
@@ -115,14 +134,14 @@ class VideoActivity : AppCompatActivity() {
 
     // exit handlers
     override fun onBackPressed() {
-        usersRef.child(peerId).child("callHandler").setValue(null)
-        usersRef.child(userId).child("callHandler").setValue(null)
+        usersRef.child(connectionId).child("callHandler").setValue(null)
+        userCallRef.setValue(null)
         finish()
     }
 
     override fun onDestroy() {
         userCallRef.setValue(null)
-        usersRef.child(peerId).child("callHandler").setValue(null)
+        usersRef.child(connectionId).child("callHandler").setValue(null)
         mRtcEngine?.leaveChannel()
         RtcEngine.destroy()
 
