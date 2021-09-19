@@ -1,37 +1,24 @@
 package com.mobdeve.s11.group8.finalproject
 
-import android.Manifest
-import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
-import android.webkit.PermissionRequest
-import android.webkit.WebChromeClient
-import android.webkit.WebView
-import android.webkit.WebViewClient
-import android.widget.ImageButton
-import android.widget.Toast
-import com.google.firebase.auth.FirebaseAuth
-import com.google.firebase.database.DataSnapshot
-import com.google.firebase.database.DatabaseError
-import com.google.firebase.database.FirebaseDatabase
-import com.google.firebase.database.ValueEventListener
-import java.util.*
-import android.content.Intent
 import android.util.Log
+import android.view.SurfaceView
 import android.widget.FrameLayout
-
-import io.agora.rtc.Constants
+import android.widget.ImageButton
+import androidx.appcompat.app.AppCompatActivity
+import com.google.firebase.auth.FirebaseAuth
+import com.google.firebase.database.FirebaseDatabase
 import io.agora.rtc.IRtcEngineEventHandler
 import io.agora.rtc.RtcEngine
 import io.agora.rtc.video.VideoCanvas
+import java.util.*
 
 class VideoActivity : AppCompatActivity() {
 
     private val user = FirebaseAuth.getInstance().currentUser!!
     private val userId: String = user.uid
     private val peerId: String = "TilkTolk" + userId
-    private lateinit var partnerId: String
 
-    private var isPeerConnected = false
     private val rootRef = FirebaseDatabase.getInstance().reference
     private val usersRef = rootRef.child(Keys.USERS.name)
     private val userCallRef = usersRef.child(userId).child("callHandler")
@@ -44,14 +31,12 @@ class VideoActivity : AppCompatActivity() {
     private var isMicOn: Boolean = true
 
     private lateinit var mRtcEngine: RtcEngine
-    private val appID: String = "404730d6397245638ec44e95a901c5e7"
-    private val primaryCert: String = "02f6a90909f844f5838e168c837b5a2f"
-    private lateinit var channelName: String
 
     private val mRtcEventHandler = object : IRtcEngineEventHandler() {
         // Listen for the remote user joining the channel to get the uid of the user.
         override fun onUserJoined(uid: Int, elapsed: Int) {
             runOnUiThread {
+                Log.d("REMOTE", uid.toString())
                 // Call setupRemoteVideo to set the remote video view after getting uid from the onUserJoined callback.
                 setupRemoteVideo(uid)
             }
@@ -66,15 +51,11 @@ class VideoActivity : AppCompatActivity() {
             val connectionId: String = intent.getStringExtra(Keys.CONNECTION_ID.name).toString()
             Log.d("PeerJS", connectionId)
 
-            // go to channel of person you're calling
-            channelName = connectionId
         } else {
             userCallRef.child("connectionID").setValue(peerId)
             userCallRef.child("callAccepted").setValue(true)
             Log.d("PeerJS", "Receiver")
 
-            // go to your own channel
-            channelName = peerId
         }
 
         initComponents()
@@ -83,10 +64,12 @@ class VideoActivity : AppCompatActivity() {
 
     private fun initializeAndJoinChannel() {
         try {
-            mRtcEngine = RtcEngine.create(baseContext, appID, mRtcEventHandler)
+            mRtcEngine = RtcEngine.create(baseContext, getString(R.string.agora_id), mRtcEventHandler)
         } catch (e: Exception) {
 
         }
+
+        Log.d("LOCAL", "INIT")
 
         // By default, video is disabled, and you need to call enableVideo to start a video stream.
         mRtcEngine!!.enableVideo()
@@ -94,29 +77,29 @@ class VideoActivity : AppCompatActivity() {
         val localContainer = findViewById(R.id.fl_video_local) as FrameLayout
 
         // Call CreateRendererView to create a SurfaceView object and add it as a child to the FrameLayout.
-        val localFrame = RtcEngine.CreateRendererView(baseContext)
+        val localFrame: SurfaceView = RtcEngine.CreateRendererView(baseContext)
         localContainer.addView(localFrame)
 
         // Pass the SurfaceView object to Agora so that it renders the local video.
         mRtcEngine!!.setupLocalVideo(VideoCanvas(localFrame, VideoCanvas.RENDER_MODE_FIT, 0))
 
         // Join the channel without token.
-        mRtcEngine!!.joinChannel(null, channelName, "", 0)
+        mRtcEngine!!.joinChannel(getString(R.string.agora_token), getString(R.string.agora_channel), "", 0)
     }
 
     private fun setupRemoteVideo(uid: Int) {
+        Log.d("REMOTE", "INIT")
         val remoteContainer = findViewById(R.id.fl_video_remote) as FrameLayout
 
-        val remoteFrame = RtcEngine.CreateRendererView(baseContext)
+        if (remoteContainer.childCount >= 1) {
+            return
+        }
+
+        val remoteFrame: SurfaceView = RtcEngine.CreateRendererView(baseContext)
+        remoteFrame.setZOrderOnTop(true)
         remoteFrame.setZOrderMediaOverlay(true)
         remoteContainer.addView(remoteFrame)
         mRtcEngine!!.setupRemoteVideo(VideoCanvas(remoteFrame, VideoCanvas.RENDER_MODE_FIT, uid))
-    }
-
-    // DO NOT REMOVE
-    // USED BY JSINTERFACE
-    fun onPeerConnected() {
-        this.isPeerConnected = true
     }
 
     // exit handlers
@@ -151,6 +134,7 @@ class VideoActivity : AppCompatActivity() {
 
             //actually turn off cam
             mRtcEngine.muteLocalVideoStream(isCamOn)
+            Log.d("VIDEO", isCamOn.toString())
         }
 
         this.ibEnd.setOnClickListener {
@@ -169,6 +153,7 @@ class VideoActivity : AppCompatActivity() {
 
             //actually toggle mic
             mRtcEngine.muteLocalAudioStream(isMicOn)
+            Log.d("AUDIO", isCamOn.toString())
         }
     }
 }
