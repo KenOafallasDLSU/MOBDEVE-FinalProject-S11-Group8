@@ -1,3 +1,8 @@
 <resources>
     <string name="app_name">TilkTalk</string>
+    <string name="agora_id">404730d6397245638ec44e95a901c5e7</string>
+    <string name="agora_cert">02f6a90909f844f5838e168c837b5a2f</string>
+    <string name="agora_channel">TilkTalkTestOne</string>
+    <string name="agora_token">006404730d6397245638ec44e95a901c5e7IAC7iPiHOM2MDHbdh3AVfMLuC2erlTdJB1yf+EAl0jWUvFOxTJUAAAAAEAAh3GK8QVNIYQEAAQBCU0hh</string>
+
 </resources>
