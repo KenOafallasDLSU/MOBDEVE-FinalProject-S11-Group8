@@ -112,7 +112,7 @@ class VideoActivity : AppCompatActivity() {
         // Pass the SurfaceView object to Agora so that it renders the local video.
         mRtcEngine!!.setupLocalVideo(VideoCanvas(localFrame, VideoCanvas.RENDER_MODE_FIT, 0))
 
-        // Join the channel without token.
+        // Join the channel with token.
         mRtcEngine!!.joinChannel(getString(R.string.agora_token), getString(R.string.agora_channel), "", 0)
     }
 
