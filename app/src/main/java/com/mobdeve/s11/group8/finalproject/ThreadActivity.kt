@@ -59,6 +59,7 @@ class ThreadActivity : AppCompatActivity(), OnItemClickListener {
                     Log.d("INCOMING", snapshot.value.toString())
 
                     val receivingIntent = Intent(this@ThreadActivity, ReceivingActivity::class.java)
+                    receivingIntent.putExtra(Keys.CALL_PARTNER.name, snapshot.value.toString())
                     startActivity(receivingIntent)
                 }
             }

@@ -71,7 +71,7 @@ class CallingActivity : AppCompatActivity() {
                 } else if(snapshot.value.toString() == "false") {
                     val toast = Toast.makeText(
                         applicationContext,
-                        "Call Request Rejected",
+                        "Call Ended",
                         Toast.LENGTH_SHORT
                     )
                     toast.show()

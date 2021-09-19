@@ -54,12 +54,7 @@ class ReceivingActivity : AppCompatActivity() {
         this.ibReject = findViewById(R.id.ib_receiving_reject)
 
         //look for user in db
-        this.partnerId = userCallRef.child("incoming").toString()
-
-        val pattern: Pattern = Pattern.compile("USERS/(.*?)/callHandler", Pattern.DOTALL)
-        val matcher: Matcher = pattern.matcher(partnerId)
-        while (matcher.find()) { this.partnerId = matcher.group(1) }
-        this.tvDesc.text = partnerId
+        this.partnerId = intent.getStringExtra(Keys.CALL_PARTNER.name).toString()
 
         // gets partner's name
         this.usersRef.child(partnerId).addValueEventListener(object : ValueEventListener {
@@ -80,7 +75,7 @@ class ReceivingActivity : AppCompatActivity() {
                 if(snapshot.value == null) {
                     val toast = Toast.makeText(
                         applicationContext,
-                        "Call Request Dropped by Caller",
+                        "Call Ended",
                         Toast.LENGTH_SHORT
                     )
                     toast.show()

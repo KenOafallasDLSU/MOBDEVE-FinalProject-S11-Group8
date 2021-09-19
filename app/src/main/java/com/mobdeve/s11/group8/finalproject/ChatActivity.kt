@@ -103,6 +103,7 @@ class ChatActivity : AppCompatActivity() {
                     Log.d("INCOMING", snapshot.value.toString())
 
                     val receivingIntent = Intent(this@ChatActivity, ReceivingActivity::class.java)
+                    receivingIntent.putExtra(Keys.CALL_PARTNER.name, snapshot.value.toString())
                     startActivity(receivingIntent)
                 }
             }
