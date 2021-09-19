@@ -64,33 +64,40 @@ class RegisterActivity : AppCompatActivity() {
         }
     }
 
+    // checks for empty fields
+    // returns true if there is an empty field and false if none
     private fun checkEmpty(email: String, name: String, password: String): Boolean {
         var hasEmpty: Boolean = false;
 
+        // if email field is empty, prompt user to input email
         if(email.isEmpty()) {
             this.etEmail.error = "Required field"
             this.etEmail.requestFocus()
             hasEmpty = true
         }
 
+        // if display name is empty, prompt user to input name
         if(name.isEmpty()) {
             this.etName.error = "Required field"
             this.etName.requestFocus()
             hasEmpty = true
         }
 
+        // if password is empty, prompt user to input password
         if(password.isEmpty()) {
             this.etPassword.error = "Required field"
             this.etPassword.requestFocus()
             hasEmpty = true
         }
 
+        // if email is invalid, prompt user to input a valid email
         if(!isValidEmail(etEmail.text.trim().toString())) {
             this.etEmail.error = "Please enter a valid e-mail"
             this.etName.requestFocus()
             hasEmpty = true
         }
 
+        // if password is less than 6 characters long, prompt user to input valid password
         if(password.length < 6) {
             this.etPassword.error = "Password must be at least 6 characters"
             this.etName.requestFocus()
@@ -100,10 +107,13 @@ class RegisterActivity : AppCompatActivity() {
         return hasEmpty
     }
 
+    // checks whether the input email is valid or not
+    // returns true if email is valid and false if not
     private fun isValidEmail(str: String): Boolean{
         return android.util.Patterns.EMAIL_ADDRESS.matcher(str).matches()
     }
 
+    // adds user to the database
     private fun storeUser(user: User) {
         pbRegister.visibility = View.VISIBLE
 
@@ -128,6 +138,7 @@ class RegisterActivity : AppCompatActivity() {
             }
     }
 
+    // notifies the user that they have successfully registered and redirect them to their chat list
     private fun successfulRegistration() {
         this.pbRegister.visibility = View.GONE
         Toast.makeText(this, "User successfully registered", Toast.LENGTH_SHORT).show();
@@ -136,6 +147,7 @@ class RegisterActivity : AppCompatActivity() {
         finish()
     }
 
+    // presents an error message when user fails to register
     private fun failedRegistration() {
         this.pbRegister.visibility = View.GONE
         Toast.makeText(this, "User registration failed", Toast.LENGTH_SHORT).show()
