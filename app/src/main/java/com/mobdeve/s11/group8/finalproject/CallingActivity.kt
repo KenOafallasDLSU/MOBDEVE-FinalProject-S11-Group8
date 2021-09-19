@@ -77,6 +77,7 @@ class CallingActivity : AppCompatActivity() {
                 //start the call
                 val callIntent = Intent(this@CallingActivity, VideoActivity::class.java)
                 callIntent.putExtra(Keys.CONNECTION_ID.name, snapshot.value.toString())
+                callIntent.putExtra(Keys.PARTNER_ID.name, partnerId)
                 startActivity(callIntent)
             }
         })
